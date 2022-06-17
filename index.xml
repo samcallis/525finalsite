@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sam Callis</title>
+    <link>/</link>
+    <description>Recent content on Sam Callis</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Fri, 10 Jun 2022 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Indoor Air Pollution: Final Project</title>
+      <link>/projects/bmi525_finalproj/</link>
+      <pubDate>Fri, 10 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/bmi525_finalproj/</guid>
+      <description>Description of the DATA you used (either given to you or where you found it, what unique characteristics of the data, what quantitative and qualitative information is in the data set, etc.) Description of the AUDIENCE you are aiming for (including more detail than simply saying “a biochemist”). Description of the TYPE of graph (e.g. Bar chart, Sankey Dendogram, etc). Representation Description: What are you trying to show? How to read it &amp;amp; what to look for: How should a newbie to this graph approach interpreting it?</description>
+    </item>
+    
+    <item>
+      <title>Maps</title>
+      <link>/projects/maps/</link>
+      <pubDate>Wed, 01 Jun 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/maps/</guid>
+      <description>Here we will take a look at our data:
+trees_raw &amp;lt;- read.csv(here::here(&amp;quot;data&amp;quot;, &amp;quot;Parks_Tree_Inventory.csv&amp;quot;)) glimpse(trees_raw) ## Rows: 25,534 ## Columns: 41 ## $ X &amp;lt;dbl&amp;gt; -13658194, -13658213, -13658254, -13658227,… ## $ Y &amp;lt;dbl&amp;gt; 5712487, 5712485, 5712491, 5712487, 5712488… ## $ OBJECTID &amp;lt;int&amp;gt; 426, 427, 428, 429, 430, 431, 432, 433, 434… ## $ Inventory_Date &amp;lt;chr&amp;gt; &amp;quot;2017/05/09 00:00:00+00&amp;quot;, &amp;quot;2017/05/09 00:00… ## $ Species &amp;lt;chr&amp;gt; &amp;quot;PSME&amp;quot;, &amp;quot;PSME&amp;quot;, &amp;quot;CRLA&amp;quot;, &amp;quot;QURU&amp;quot;, &amp;quot;PSME&amp;quot;, &amp;quot;PS… ## $ DBH &amp;lt;dbl&amp;gt; 37.</description>
+    </item>
+    
+    <item>
+      <title>Tables and Fonts</title>
+      <link>/projects/tables_fonts/</link>
+      <pubDate>Sun, 15 May 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/tables_fonts/</guid>
+      <description>Lab 5 - Tables &amp;amp; Fonts Tables Note that the pnwflights14 package includes several other data sets that may be of use and/or interest: mappings from two-letter airline codes to airline names, weather conditions, etc.
+data(&amp;quot;flights&amp;quot;, package = &amp;quot;pnwflights14&amp;quot;) data(&amp;quot;weather&amp;quot;, package = &amp;quot;pnwflights14&amp;quot;) data(&amp;quot;airports&amp;quot;, package = &amp;quot;pnwflights14&amp;quot;) data(&amp;quot;airlines&amp;quot;, package = &amp;quot;pnwflights14&amp;quot;) Question 1 Which airlines had the best and worst track records of on-time departures in each month? Is it different between PDX and SEA?</description>
+    </item>
+    
+    <item>
+      <title>MoMA</title>
+      <link>/projects/moma/</link>
+      <pubDate>Fri, 22 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/moma/</guid>
+      <description>Workflow for Lab 02 The lab instructions can be found here; we will work through its contents together via Webex. You will use this RMarkdown file as your workspace and final document. Don’t forget to update the “author” metadata field at the top of the file!
+ Start by Loading Libraries moma &amp;lt;- read_csv(here::here(&amp;quot;data&amp;quot;,&amp;quot;artworks-cleaned.csv&amp;quot;)) ## Rows: 2253 Columns: 23 ## ── Column specification ──────────────────────────────────────────────────────── ## Delimiter: &amp;quot;,&amp;quot; ## chr (6): title, artist, artist_bio, artist_gender, classification, department ## dbl (10): artist_birth_year, artist_death_year, num_artists, n_female_artist.</description>
+    </item>
+    
+    <item>
+      <title>Hot Dog Plot: Visualization Brief</title>
+      <link>/projects/hotdogplot/</link>
+      <pubDate>Fri, 01 Apr 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/projects/hotdogplot/</guid>
+      <description>1) Description This is a bar plot showing the number of hot dogs eaten per year by the winner of Nathan’s Hot Dog Eating Contest. Additionally, information about the establishment of the IOFCE (Major League Eating) and its potential effect on the results of the contest are included. Female participants were included from 2011 and are shown in an overlay.
+ 2) Description of the data ## Rows: 49 Columns: 5 ## ── Column specification ──────────────────────────────────────────────────────── ## Delimiter: &amp;quot;,&amp;quot; ## chr (3): gender, name, affiliated ## dbl (2): year, num_eaten ## ## ℹ Use `spec()` to retrieve the full column specification for this data.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>/about/</link>
+      <pubDate>Sat, 22 Aug 2015 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>I am a biostatistician working primarily in oncology. As of June 2022, I have completed my MS in Biostatistics from the OHSU-PSU School of Public Health. This coming July I will begin work with the SWOG SDMC at Fred Hutch in Seattle, WA. I am passionate about making data more equitable and accessible to all, and I believe that visualization is a core component of that mission.</description>
+    </item>
+    
+    <item>
+      <title>Projects</title>
+      <link>/projects/projects/</link>
+      <pubDate>Wed, 19 Aug 2015 20:29:37 -0700</pubDate>
+      
+      <guid>/projects/projects/</guid>
+      <description> Here you can find some projects I worked on in BMI 525, data visualization with Steve Bedrick in 2022:
+ </description>
+    </item>
+    
+    <item>
+      <title>Home</title>
+      <link>/home/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/home/</guid>
+      <description>Welcome to my personal webpage! See the links above to view my bio or various data projects I have worked on.</description>
+    </item>
+    
+    <item>
+      <title>License</title>
+      <link>/license/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/license/</guid>
+      <description>You can use this page to put a license on the contents of your blog, like so:
+ The MIT License (MIT)
+Copyright (c) 2022 Steven Bedrickbedricks@ohsu.edu
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &amp;ldquo;Software&amp;rdquo;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</description>
+    </item>
+    
+  </channel>
+</rss>
