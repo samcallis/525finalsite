@@ -1,0 +1,571 @@
+---
+title: "Indoor Air Pollution: Final Project"
+author: "Sam Callis"
+date: "2022-06-10"
+output: 
+  html_document:
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE}
+pacman::p_load(
+  tidyverse,
+  broom,
+  ggplot2,
+  flextable,
+  kableExtra,
+  gridExtra,
+  fs,
+  glue,
+  here,
+  janitor,
+  officer,
+  lme4,
+  nlme,
+  readxl,
+  stats,
+  htmltools,
+  multcomp,
+  sjPlot,
+  table1,
+  rpact,
+  psych,
+  doBy,
+  maps,
+  psych,
+  geepack,
+  ggrepel,
+  boot,
+  stats,
+  splines,
+  rpact,
+  lubridate,
+  survminer,
+  survival,
+  biostat3,
+  readxl,
+  install = FALSE
+)
+```
+
+Description of the DATA you used (either given to you or where you found it, what unique characteristics of the data, what quantitative and qualitative information is in the data set, etc.)
+Description of the AUDIENCE you are aiming for (including more detail than simply saying “a biochemist”).
+Description of the TYPE of graph (e.g. Bar chart, Sankey Dendogram, etc).
+Representation Description: What are you trying to show?
+How to read it & what to look for: How should a newbie to this graph approach interpreting it? What are the major highlights of the graph type?
+Presentation: address how you are using annotation, color, and general composition (e.g. how are things arranged, scale, etc.)
+How I created it: Methods section (see point 1: all relevant code should be included); additionally, include a bit about the process. Please include an early draft of your visualization (it might be a completely different), and why you changed it/what you tweaked to get to your final visualization.
+
+
+# Description of Data
+This data comes from the 4/12/22 TidyTuesday challenge. The data source is https://ourworldindata.org/indoor-air-pollution and is all about indoor air pollution.  Indoor air pollution is caused by burning unclean cooking fuels, such as wood, crop waste and dung. WHO has called indoor air pollution “the world’s largest single environmental risk”. An estimated 4.1% of global deaths are attributed to indoor air pollution. Format: This data contains multiple datasets with longitudinal data by country with different metrics for deaths attributed to indoor air pollution, access to clean fuels, GDP, and more.
+
+# Description of Audience
+This presentation is for anyone and everyone who may be concerned with the threat indoor air pollution poses. The visualizations assume a basic familiarity with world maps, but beyond that should be straightforward and accessible.
+
+# Type of graph
+In this project, both world maps and an area plot are utilized to communicate the data. The maps utilize both continuous and discrete color palettes to show what regions are most affected by air pollution, or which regions have the greatest access to clean cooking fuels. The area plot is utilized to show how the total number of deaths attributed to indoor air pollution has changed over time, by region.
+
+# Representation Description:
+The data we have span from 1990-2019 in the case of indoor air pollution related death data, and from 2000-2016 for the clean cooking fuel access data. Some questions we seek to address in this presentation are:  
+
++ 1. What parts of the world have the greatest death rates attributed to indoor air pollution? How do these death rates change over time?  
+
++ 2. How has the global trend of death attributed to indoor air pollution changed over time?  
+
++ 3. What parts of the world have greatest access to clean cooking fuels? How has access changed over time?
+
+# How to Read the Graphs:
+The maps as I have presented them are faceted into four different year snapshots. The idea is to be able to observe the not so subtle changes in the death rates, deaths per capita, and access to clean cooking fuels over time by observing changes in color. These are supplemented with the area plot, which helps us understand how total global deaths are changing over time and how these changes vary by World Bank Indicator region. 
+
+# Presentation
+```{r}
+knitr::include_graphics(here::here("data", "BMI 525 Final Presentation.pdf"))
+```
+
+
+# How I Created the Visualization:
+Please follow along with the annotated code below to follow the process:
+
+## Citations:
++ Hannah Ritchie and Max Roser (2013) - "Indoor Air Pollution". Published online at OurWorldInData.org. Retrieved from: 'https://ourworldindata.org/indoor-air-pollution' [Online Resource]  
+
++ https://ourworldindata.org/indoor-air-pollution  
+
++ https://www.who.int/news-room/fact-sheets/detail/household-air-pollution-and-health  
+
+Code references:
++ https://github.com/JuanmaMN/TidyTuesday/blob/master/2022/April/TidyTuesday_21st_April_2022.R  
+
+
+
+# Read in data
+
+**We are using the tidytuesday indoor air pollution dataset**  
+URL : https://ourworldindata.org/indoor-air-pollution
+
+```{r}
+# load data
+tuesdata <- tidytuesdayR::tt_load('2022-04-12')
+
+# clean names, rename messy variable
+pol <- tuesdata$indoor_pollution %>%
+  janitor::clean_names() %>%
+  rename(deaths_pol = deaths_cause_all_causes_risk_household_air_pollution_from_solid_fuels_sex_both_age_age_standardized_percent)
+
+
+# assign individual data frames
+fuel_gdp <- tuesdata$fuel_gdp
+death_ts <- tuesdata$death_timeseries
+death_fuel <- tuesdata$death_fuel
+death_source <- tuesdata$death_source
+
+# check em out!
+skimr::skim(pol)
+```
+
+## Exploratory Data Analysis
+```{r}
+# cut data
+pol <- pol %>%
+  mutate(q.ref = case_when(deaths_pol <= 1 ~ "0-1%",
+                           deaths_pol > 1 & deaths_pol <= 2.5 ~ "1-2.5%",
+                           deaths_pol > 2.5 & deaths_pol <= 5 ~ "2.5-5%",
+                           deaths_pol > 5 & deaths_pol <= 7.5 ~ "5-7.5%",
+                           deaths_pol > 7.5 & deaths_pol <= 10 ~ "7.5-10%",
+                           deaths_pol > 10 & deaths_pol <= 12.5 ~ "10-12.5%",
+                           deaths_pol > 12.5 ~ "12.5-25%",
+                           TRUE ~ "No Data"),
+         q.ref = factor(q.ref,
+                        levels = c("0-1%", "1-2.5%", "2.5-5%", "5-7.5%", "7.5-10%", "10-12.5%", "12.5-25%", "No Data")),
+         continent = countrycode::countrycode(code, "iso3c", "continent")) 
+
+
+min_death <- min(pol$deaths_pol, na.rm=TRUE)
+max_death <- max(pol$deaths_pol, na.rm=TRUE)
+diff_death <- max_death - min_death
+sd_death <- sd(pol$deaths_pol, na.rm = TRUE)
+
+# Steve Bedrick's code to show how different cuts split data at different years in our case
+dense_bar <- function(yoi, break_col) {
+  pol %>%
+  filter(year == {{yoi}}) %>%
+  ggplot() +
+  aes(x = fct_reorder(entity, -deaths_pol), y = deaths_pol) +
+  geom_col(aes(fill=.data[[break_col]])) +
+  labs(title = glue::glue(yoi," ", break_col)) +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
+}
+
+cowplot::plot_grid(
+  dense_bar(1990, "q.ref"),
+  dense_bar(2000, "q.ref"),
+  dense_bar(2010, "q.ref"),
+  dense_bar(2019, "q.ref"),
+  nrow = 2,
+  ncol = 2
+)
+
+# add ggplot world data
+world <- map_data("world") %>%
+  filter(region != "Antarctica")
+
+
+
+# recode regions to match data set
+world$region <- recode(world$region, "UK" = "United Kingdom")
+world$region <- recode(world$region, "USA" = "United States")
+world$region <- recode(world$region, "Trinidad" = "Trinidad and Tobago")
+world$region <- recode(world$region, "Saint Vincent" = "Saint Vincent and the Grenadines")
+world$region <- recode(world$region, "Saint Kitts" = "Saint Kitts and Nevis")
+world$region <- recode(world$region, "Macedonia" = "North Macedonia")
+world$region <- recode(world$region, "Micronesia" = "Micronesia (Entity)")
+world$region <- recode(world$region, "Democratic Republic of the Congo" = "Democratic Republic of Congo")
+world$region <- recode(world$region, "Republic of Congo" = "Congo")
+world$region <- recode(world$region, "Czech Republic" = "Czechia")
+world$region <- recode(world$region, "Ivory Coast" = "Cote d'Ivoire")
+world$region <- recode(world$region, "Antigua" = "Antigua and Barbuda")
+
+# merge datasets
+pol_2 <- pol %>%
+  dplyr::select(entity, code, year, deaths_pol, q.ref) %>%
+  pivot_wider(names_from = year, values_from = c(deaths_pol, q.ref)) %>%
+  left_join(world, by = c("entity" = "region"))
+
+update_geom_defaults("map", list(fill = "darkgrey"))
+```
+
+
+```{r, fig.width=12, fig.height = 7, fig.align = "center"}
+library(rlang)
+
+# load fonts
+extrafont::loadfonts(device = "win", quiet = TRUE)
+
+sysfonts::font_add_google("Playfair Display")
+
+font_plot <- "Playfair Display"
+
+showtext::showtext_auto()
+
+# intial plot function - includes only one year
+
+map_year <- function(q.ref_year, fill_year) {
+  ggplot() +
+  geom_map(data = world, map = world,
+           aes(long, lat, group = group, map_id = region)) +
+  geom_map(data =pol_2, map = world,
+           aes(fill = {{q.ref_year}}, map_id = entity),
+           color = "black", size = 0.15, alpha = .8) +
+  labs(title = glue::glue("Proportion of Deaths Caused By Indoor Air Pollution, ", fill_year)) +
+  #coord_map("stereographic") +
+  theme(plot.title = element_text(size = 20, family = font_plot),
+        legend.position = "bottom",
+        legend.background=element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        plot.background = element_rect(fill = "#EFF3F3")) +
+  scale_fill_brewer(palette = "YlGnBu") +
+  guides(fill = guide_legend(
+    title="",
+    title.position = "top",
+    label.position = "bottom",
+    nrow = 1,
+    family = font_plot, 
+    color = "black",
+    keywidth = 3, keyheight = 0.5))
+}
+
+map_year(q.ref_1990, 1990)
+```
+
+# Proportion of deaths over time
+```{r, warning=FALSE, fig.width=12, fig.height = 8, fig.align = "center"}
+
+pol_world <- pol_2 %>%
+  dplyr::select(entity, code, q.ref_1990:q.ref_2019, long, lat) %>%
+  pivot_longer(cols = c(q.ref_1990:q.ref_2019),
+               names_to = c('.value', 'year'),
+               names_pattern = '(.*)_(\\w+)') %>%
+  rename(pct = q.ref) %>%
+  mutate(year = as.numeric(year),
+         id = cur_group_id())
+
+pct_deaths <- pol_world %>%
+  filter(year == 1990|year == 2000| year == 2010| year == 2019) %>%
+  ggplot() +
+  geom_map(data = world, map = world,
+           aes(long, lat, group = group, map_id = region)) +
+  geom_map(map = world,
+           aes(fill = pct, map_id = entity),
+           color = "black", size = 0.15, alpha = .8) +
+  facet_wrap(~year) +
+  labs(title = "Proportion of Deaths Caused By Indoor Air Pollution",
+       subtitle = "Share of deaths (any cause) attributed to indoor air pollution, from burning solid fuels, as a risk factor",
+       caption = "Source: https://ourworldindata.org/") +
+  #coord_map("stereographic") +
+  theme(plot.title = element_text(size = 20, family = font_plot),
+        legend.position = "bottom",
+        legend.background=element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        strip.text = element_text(size = 20, family = font_plot, hjust = 0.1),
+        strip.background = element_blank(),
+        plot.background = element_rect(fill = "#EFF3F3")) +
+  scale_fill_brewer(palette = "YlGnBu") +
+  guides(fill = guide_legend(
+    title="",
+    title.position = "top",
+    label.position = "bottom",
+    nrow = 1,
+    family = font_plot, 
+    color = "black",
+    keywidth = 3, keyheight = 0.5))
+
+pct_deaths
+```
+
+
+# Death count per capita over time
+```{r}
+# cut data
+death_source <- death_source %>%
+  janitor::clean_names() %>%
+  rename(death_rate = deaths_cause_all_causes_risk_household_air_pollution_from_solid_fuels_sex_both_age_age_standardized_rate)
+
+death_source <- death_source %>%
+  mutate(q.ref = case_when(death_rate <= 10 ~ "0-10",
+                           death_rate > 10 & death_rate <= 25 ~ "11-25",
+                           death_rate > 25 & death_rate <= 50 ~ "25-50",
+                           death_rate > 50 & death_rate <= 100 ~ "51-100",
+                           death_rate > 100 & death_rate <= 250 ~ "101-250",
+                           death_rate > 250 & death_rate <= 500 ~ "251-500",
+                           death_rate > 500 ~ ">500",
+                           TRUE ~ "No Data"),
+         q.ref = factor(q.ref,
+                        levels = c("0-10", "11-25", "25-50", "51-100", "101-250", "251-500", ">500", "No Data")),
+         continent = countrycode::countrycode(code, "iso3c", "continent")) 
+
+
+
+# merge world datasets
+death_source_2 <- death_source %>%
+  dplyr::select(entity, code, year, death_rate, q.ref) %>%
+  pivot_wider(names_from = year, values_from = c(death_rate, q.ref)) %>%
+  left_join(world, by = c("entity" = "region"))
+
+death_source_world <- death_source_2 %>%
+  dplyr::select(entity, code, q.ref_1990:q.ref_2019, long, lat) %>%
+  pivot_longer(cols = c(q.ref_1990:q.ref_2019),
+               names_to = c('.value', 'year'),
+               names_pattern = '(.*)_(\\w+)') %>%
+  rename(rate = q.ref) %>%
+  mutate(year = as.numeric(year),
+         id = cur_group_id())
+```
+
+```{r, fig.width=12, fig.height = 8, fig.align = "center"}
+#plots
+death_rates <- death_source_world %>%
+  filter(year == 1990|year == 2000| year == 2010| year == 2019) %>%
+  ggplot() +
+  geom_map(data = world, map = world,
+           aes(long, lat, group = group, map_id = region)) +
+  geom_map(map = world,
+           aes(fill = rate, map_id = entity),
+           color = "black", size = 0.15, alpha = .8) +
+  facet_wrap(~year) +
+  labs(title = "Rates of Death Caused By Indoor Air Pollution",
+       subtitle = "Death rates are the number of indoor air polution deaths per 100,000 people",
+       caption = "Source: https://ourworldindata.org/") +
+  #coord_map("stereographic") +
+  theme(plot.title = element_text(size = 20, family = font_plot),
+        plot.subtitle = element_text(size = 14, family = font_plot),
+        legend.position = "bottom",
+        legend.background=element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        strip.text = element_text(size = 20, family = font_plot, hjust = 0.1),
+        strip.background = element_blank(),
+        plot.background = element_rect(fill = "#EFF3F3")) +
+  scale_fill_brewer(palette = "YlGn") +
+  guides(fill = guide_legend(
+    title="",
+    title.position = "top",
+    label.position = "bottom",
+    nrow = 1,
+    family = font_plot, 
+    color = "black",
+    keywidth = 3, keyheight = 0.5))
+
+death_rates
+```
+
+# Total Deaths over Time
+```{r, warning=FALSE, fig.width=12, fig.height = 7, fig.align = "center"}
+# colorblind palettes
+#From Paul Tol: https://personal.sron.nl/~pault/
+Tol_bright <- c('#EE6677', '#228833', '#4477AA', '#CCBB44', '#66CCEE', '#AA3377', '#BBBBBB')
+
+Tol_muted <- c('#88CCEE', '#44AA99', '#117733', '#332288', '#DDCC77', '#999933','#CC6677', '#882255', '#AA4499', '#DDDDDD')
+
+Tol_light <- c('#BBCC33', '#AAAA00', '#77AADD', '#EE8866', '#EEDD88', '#FFAABB', '#99DDFF', '#44BB99', '#DDDDDD')
+
+#From Color Universal Design (CUD): https://jfly.uni-koeln.de/color/
+Okabe_Ito <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000")
+
+# format death time series data set as we want to
+death_ts <- death_ts %>%
+  janitor::clean_names() %>%
+  rename(deaths_num = deaths_cause_all_causes_risk_household_air_pollution_from_solid_fuels_sex_both_age_all_ages_number_4,
+         year = year_3) %>%
+  mutate(region = countrycode::countrycode(code, "iso3c", "region"))
+
+#death_area <- 
+death_ts %>%
+  group_by(region, year) %>%
+  summarise(deaths_sum = sum(deaths_num, na.rm = TRUE)) %>%
+  mutate(continent = as_factor(region)) %>%
+  na.omit() %>%
+  ggplot() +
+  aes(x = year, y = deaths_sum, group = fct_reorder(region, deaths_sum), fill = region) +
+  geom_area(alpha = 0.9) +
+  labs(title = "Total Deaths Due to Household Air Pollution by Region",
+       subtitle = "Regions as defined by World Bank Development Indicators",
+       caption = "Source: https://ourworldindata.org/") +
+  scale_fill_manual(values = c( '#332288', '#999933','#CC6677', '#AA4499','#88CCEE', '#117733', '#DDCC77')) +
+  theme(plot.title = element_text(size = 16, family = font_plot, colour = "#353535"),
+        plot.subtitle = element_text(size = 12, family = font_plot, colour = "#353535"),
+        legend.position = "none",
+        legend.background=element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #panel.grid.major.y = element_line(colour = "lightgrey", size = 0.2),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        #axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        #axis.text.y = element_blank(),
+        #axis.ticks.x = element_blank(),
+        #axis.ticks.y = element_blank(),
+        plot.background = element_rect(fill = "#EFF3F3"),
+        #plot.margin = unit(c(0, 1, 0, 1), "cm")
+        ) +
+  xlim(c(1990,2025)) +
+  ylim(c(0, 8000000)) +
+  scale_y_continuous(labels = scales::unit_format(unit = "M", scale = 1e-6)) +
+  annotate('segment', x = 2019.3, xend = 2020.2, y = 400000, yend = 400000, size = 0.3, color = '#117733') +
+  annotate('text', x = 2020.5, y = 400000, label = "South Asia", color = '#117733', size = 3, hjust = 0) +
+  annotate('segment', x = 2019.3, xend = 2020.2, y = 1100000, yend = 1100000, size = 0.3, color = '#332288') +
+  annotate('text', x = 2020.5, y = 1100000, label = "E. Asia & Pacific", color = '#332288', size = 3, hjust = 0) +
+  annotate('segment', x = 2019.3, xend = 2020.2, y = 1700000, yend = 1700000, size = 0.3, color ='#DDCC77') +
+  annotate('text', x = 2020.5, y = 1700000, label = "Sub-Saharan \nAfrica", color =  '#C9BA6E', size = 3, hjust = 0) +
+  annotate('segment', x = 2019.3, xend = 2020.2, y = 2250000, yend = 2300000, size = 0.3, color ='#CC6677') +
+  annotate('text', x = 2020.5, y = 2300000, label = "Latin America &\nCarribean", color = '#CC6677', size = 3, hjust = 0) +
+  annotate('segment', x = 2019.3, xend = 2020.2, y = 2300000, yend = 2700000, size = 0.3, color ='#999933') +
+  annotate('text', x = 2020.5, y = 2800000, label = "Europe &\nCentral Asia", color = '#999933', size = 3, hjust = 0) +
+  annotate('segment', x = 2019.17, xend = 2020.2, y = 2340000, yend = 3200000, size = 0.3, color ='#882255') +
+  annotate('text', x = 2020.5, y = 3300000, label = "Middle East &\nNorth Africa", color = '#882255', size = 3, hjust = 0) +
+  annotate('segment', x = 2019, xend = 2020.2, y = 2370000, yend = 3600000, size = 0.3, color ='#88CCEE') +
+  annotate('text', x = 2020.5, y = 3700000, label = "North America", color = '#7DBAD9', size = 3, hjust = 0)
+
+# death_area
+
+```
+
+
+# Access to clean fuel
+```{r}
+# cut data
+fuel_gdp <- fuel_gdp %>%
+  janitor::clean_names() %>%
+  rename(access = access_to_clean_fuels_and_technologies_for_cooking_percent_of_population,
+         gdp = gdp_per_capita_ppp_constant_2017_international)
+
+fuel_gdp <- fuel_gdp %>%
+  mutate(q.ref = case_when(access <= 10 ~ "0-10",
+                           access > 10 & access <= 20 ~ "10-20",
+                           access > 20 & access <= 30 ~ "20-30",
+                           access > 30 & access <= 40 ~ "30-40",
+                           access > 40 & access <= 50 ~ "40-50",
+                           access > 50 & access <= 60 ~ "50-60",
+                           access > 60 & access <= 70 ~ "60-70",
+                           access > 70 & access <= 80 ~ "70-80",
+                           access > 80 & access <= 90 ~ "80-90",
+                           access > 90 ~ "90-100",
+                           TRUE ~ "No Data"),
+         q.ref = factor(q.ref,
+                        levels = c("0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100", "No Data")),
+         continent = countrycode::countrycode(code, "iso3c", "continent")) 
+
+# merge world datasets
+fuel_gdp_2 <- fuel_gdp %>%
+  filter(is.na(access) == FALSE) %>%
+  dplyr::select(entity, code, year, access, q.ref) %>%
+  pivot_wider(names_from = year, values_from = c(access, q.ref)) %>%
+  left_join(world, by = c("entity" = "region"))
+
+fuel_gdp_world <- fuel_gdp_2 %>%
+  dplyr::select(entity, code, access_2000:access_2016, long, lat) %>%
+  pivot_longer(cols = c(access_2000:access_2016),
+               names_to = c('.value', 'year'),
+               names_pattern = '(.*)_(\\w+)') %>%
+  rename(pct = access) %>%
+  mutate(year = as.numeric(year))
+
+```
+
+```{r, fig.width=12, fig.height = 8, fig.align = "center"}
+
+library(viridis)
+#plots
+
+fuel_plot <- fuel_gdp_world %>%
+  filter(year == 2000|year == 2005| year == 2010| year == 2016) %>%
+  ggplot() +
+  geom_map(data = world, map = world,
+           aes(long, lat, group = group, map_id = region)) +
+  geom_map(map = world,
+           aes(fill = pct, map_id = entity),
+           color = "black", size = 0.15, alpha = .8) +
+  facet_wrap(~year) +
+  labs(title = "Percent of Population with Access to Clean Cooking Fuels",
+       caption = "Source: https://ourworldindata.org/") +
+  #coord_map("stereographic") +
+  theme(plot.title = element_text(size = 20, family = font_plot),
+        plot.subtitle = element_text(size = 14, family = font_plot),
+        legend.position = "bottom",
+        legend.background=element_blank(),
+        legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        strip.text = element_text(size = 20, family = font_plot, hjust = 0.1),
+        strip.background = element_blank(),
+        plot.background = element_rect(fill = "#EFF3F3")) +
+  scale_fill_viridis(direction = -1,
+                     alpha = 0.9)
+  # scale_fill_gradient2(low = "darkred",
+  #                      mid = "lightgoldenrod",
+  #                     high = "darkblue",
+  #                     midpoint = 10,
+  #                     na.value = "#C8C8C8") 
+# +
+#   guides(fill = guide_legend(
+#     title="Percent Access",
+#     title.position = "top",
+#     label.position = "bottom",
+#     nrow = 1,
+#     family = font_plot,
+#     color = "black",
+#     keywidth = 5, keyheight = 0.5
+#     )
+#     )
+
+
+fuel_plot
+```
+

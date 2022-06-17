@@ -1,0 +1,302 @@
+---
+title: "MoMA"
+author: "Sam Callis"
+date: "2022-04-22"
+output:
+  html_document:
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Workflow for Lab 02
+
+The lab instructions can be found [here](https://stevenbedrick.github.io/data-vis-labs-2022/02-moma.html); we will work through its contents together via Webex. You will use this RMarkdown file as your workspace and final document. Don't forget to update the "author" metadata field at the top of the file!
+
+# Start by Loading Libraries
+
+```{r load-packages, include=FALSE}
+library(readr)
+library(here)
+library(tidyverse)
+library(ggthemes)
+```
+
+
+```{r}
+moma <- read_csv(here::here("data","artworks-cleaned.csv"))
+```
+
+
+
+
+# Know Your Data
+
+What is the first painting acquired by MoMA? Which year? Which artist? What title?
+
+
+```{r}
+#install.packages("palmer_penguins")
+```
+
+
+## How Many Paintings?
+```{r}
+moma %>%
+  summarise("Number of Paintings" = nrow(moma))
+```
+
+**There are `r paste(nrow(moma))` paintings in this data set.**
+
+## What is the first painting that was acquired?
+```{r}
+first_paint <- moma %>% select(artist, title, year_acquired) %>% group_by(year_acquired) %>% arrange(year_acquired) %>%
+   head()
+first_paint
+```
+
+**The first painting acquired is `r paste(first_paint[1,2])` by  `r paste(first_paint[1,1])`, acquired in `r paste(first_paint[1,3])`.**
+
+## What is the oldest painting?
+```{r}
+old_paint <- moma %>% select(artist, title, year_created) %>% group_by(year_created) %>% arrange(year_created) %>%
+   head()
+old_paint
+```
+**The first painting acquired is `r paste(old_paint[1,2])` by  `r paste(old_paint[1,1])`, painted in `r paste(old_paint[1,3])`.**
+
+## How many artists?
+```{r}
+num_art <- moma %>%
+  distinct(artist) %>%
+  tally() %>%
+  pull()
+num_art
+```
+**There are `r paste(num_art)` artists.**
+
+## Which artist ahs the most paintings?
+```{r}
+most <- moma %>%
+  select(artist, title) %>%
+  group_by(artist) %>%
+  tally() %>%
+  arrange(desc(n)) %>%
+  head()
+most
+```
+
+**The artist with the most paintings is `r paste(most[1,1])` with `r paste(most[1,2])`.**
+
+## How many paintings, by gender?
+```{r}
+paint_gender <- moma %>%
+  select(title, artist, artist_gender) %>%
+  group_by(artist_gender) %>%
+  count
+paint_gender
+```
+**There are `r paste(paint_gender[1,2])` paintings by Female artists, `r paste(paint_gender[2,2])` by Male artists, and `r paste(paint_gender[3,2])` by artists with unknown gender.**
+
+## How many artists, by gender?
+```{r}
+artist_gender <- moma %>%
+  select(title, artist, artist_gender) %>%
+  group_by(artist_gender) %>%
+  distinct(artist) %>%
+  count()
+
+artist_gender
+```
+**There are `r paste(artist_gender[1,2])` Female artists, `r paste(artist_gender[2,2])` Male artists, and `r paste(artist_gender[3,2])` artists with unknown gender.**
+
+## In which years were the most paintings in the collection _acquired_?
+```{r}
+years_acq <- moma %>%
+  select(title, artist, year_acquired) %>%
+  group_by(year_acquired) %>%
+  count() %>%
+  arrange(desc(n))
+
+head(years_acq)
+```
+
+**The MoMA acquired the most, 86, paintings in 1985, followed by 71 in 1942 & 1979.**
+
+## In which years were the most paintings in the collection _created_?
+```{r}
+years_created <- moma %>%
+  select(title, artist, year_created) %>%
+  group_by(year_created) %>%
+  count() %>%
+  arrange(desc(n))
+
+head(years_created)
+```
+
+**1977 was the year with the most paintings created, 57, in the MoMA collection followed by 56 in both 1940 & 1964.**
+
+## What about the first painting by a solo female artist?
+```{r}
+moma %>%
+  filter(n_female_artists == 1) %>%
+  arrange(year_created) %>%
+  select(title, artist, year_created, year_acquired) %>%
+  head()
+
+moma %>%
+  filter(n_female_artists == 1) %>%
+  arrange(year_acquired) %>%
+  select(title, artist, year_created, year_acquired) %>%
+  head()
+```
+
+**The earliest created painting by a solo female artist is Self-Portrait with Two Flowers in Her Raised Left Hand by Paula Modersohn-Becker, which was created in 1907 (acq. 2017). The earliest acquired painting by a solo female artist is Landscape, 47 by Natalia Goncharova, which was acquired in 1937 (created in 1912).**
+
+# Basic Plotting!
+
+## Year painted vs. year acquired
+```{r}
+years_lbl <- seq(1870, 2020, by = 20)
+
+moma_acq_years <- moma %>%
+  distinct(year_acquired) %>%
+  mutate(year_lab = ifelse(year_acquired %in% years_lbl, year_acquired, ""),
+         year_break = round(year_acquired, -1))
+
+moma_cre_years <- moma %>%
+  distinct(year_created) %>%
+  mutate(year_lab = ifelse(year_created %in% years_lbl, year_created, ""),
+         year_break = round(year_created, -1))
+
+mean <- moma %>%
+  group_by(year_acquired) %>%
+  summarise(mean = mean(year_created,na.rm = T))
+
+momaplot <- moma %>%
+  select(year_created, year_acquired) %>%
+  na.omit(.) %>%
+  ggplot() +
+  aes(x = year_created, y = year_acquired)  +
+  scale_x_continuous(expand = c(0,0), breaks = moma_cre_years$year_break, labels = moma_cre_years$year_lab) +
+  scale_y_continuous(expand = c(0,0), breaks = moma_acq_years$year_break, labels = moma_acq_years$year_lab) +
+  geom_point(alpha = 0.2, size = 0.8, color = "royalblue4") +
+  geom_abline(intercept = c(0,0), color = "red")+
+  labs(x = "Year Painted", y = "Year Acquired", title = "MoMA Keeps its Collection Current") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(colour = "snow2", size = 0.2)
+       )
+
+ggsave("momaplot.png", momaplot, device = "png", width = 7, height = 5)
+
+```
+
+
+## Faceting by gender
+```{r}
+moma %>%
+  filter(num_artists == 1) %>%
+  select(year_created, year_acquired, artist_gender) %>%
+  na.omit(.) %>%
+  ggplot() +
+  aes(x = year_created, y = year_acquired)  +
+  facet_wrap(~artist_gender) +
+  scale_x_continuous(expand = c(0,0), breaks = moma_cre_years$year_break, labels = moma_cre_years$year_lab) +
+  scale_y_continuous(expand = c(0,0), breaks = moma_acq_years$year_break, labels = moma_acq_years$year_lab) +
+  geom_point(alpha = 0.2, size = 0.8, color = "royalblue4") +
+  geom_abline(intercept = c(0,0), color = "red")+
+  labs(x = "Year Painted", y = "Year Acquired", title = "MoMA Keeps its Collection Current") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(colour = "snow2", size = 0.2))
+```
+
+
+# Exploring Painting Dimensions
+
+## Challenge #4
+```{r}
+moma_measure <- moma %>%
+  filter(height_cm < 600,
+         width_cm < 760) %>%
+  mutate(ratio = height_cm/width_cm,
+         ratio_cat = case_when(ratio>1 ~ "Taller than wide",
+                               ratio == 1 ~ "Square",
+                               ratio < 1 ~ "Wider than tall"))
+
+moma_measure %>%
+  ggplot() +
+  aes(x = width_cm, y = height_cm, group = ratio_cat, colour = ratio_cat) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Width", y = "Height", title = "MoMA Paintings, Tall & Wide") +
+  scale_colour_manual(name = "", values = c("grey30", "#FFB337", "#C914CE"))+
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(colour = "snow2", size = 0.2),
+        legend.position="bottom")
+```
+
+## Different colors
+```{r}
+library(ggthemes)
+#fivethiryeight style
+moma_measure %>%
+  ggplot() +
+  aes(x = width_cm, y = height_cm, group = ratio_cat, colour = ratio_cat) +
+  geom_point(alpha = 0.5)  +
+  scale_colour_manual(name = "", values = c("grey30", "#00539CFF", "#EEA47FFF"))+
+  theme_fivethirtyeight() +
+  labs(x = "Width", y = "Height", title = "MoMA Paintings, Tall & Wide")
+```
+
+## Experimenting with `geom_annotate()`
+```{r}
+moma_measure %>%
+  ggplot() +
+  aes(x = width_cm, y = height_cm, group = ratio_cat, colour = ratio_cat) +
+  geom_point(alpha = 0.5)  +
+  scale_colour_manual(name = "", values = c("grey30", "#00539CFF", "#EEA47FFF"))+
+  theme_fivethirtyeight() +
+  labs(x = "Width", y = "Height", title = "MoMA Paintings, Tall & Wide") +
+  theme(legend.position = "none") +
+  annotate(x = 100, y = 400, geom = "text",
+           label = "Taller than Wide", color = "#00539CFF",
+           size =4, fontface = 2) +
+  annotate(x = 410, y = 80, geom = "text",
+           label = "Wider than Tall", color = "#EEA47FFF",
+           size = 4, fontface = 2)
+  
+```
+
+
+# Challenge #5, on your own!
+```{r}
+# We will plot lenth of title vs the year it was painted
+moma %>%
+  mutate(title_length = str_count(title)) %>%
+  select(title, artist, artist_gender, title_length, year_created) %>%
+  arrange(desc(title_length)) %>%
+  slice(1:20)
+
+moma %>%
+  mutate(title_length = str_count(title)) %>%
+  select(title, artist_gender, title_length, year_created) %>%
+  na.omit(.) %>%
+  ggplot() +
+  aes(y = title_length, x = year_created, color = artist_gender)  +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", color = "red", size = 0.5) +
+  scale_color_manual(name = "", values = c("#E3B448", "#3A6B35")) +
+  labs(x = "Year Painted", y = "Length of Painting Title", title = "MoMA Paintings: Investigating Title Length") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(colour = "snow2", size = 0.2),
+        legend.position="bottom")
+```
+
+**Here we are investigating how the character length of painting titles changes over time. With the exception of numerous long-titled works by Jacob Lawrence in 1940, and a few other outlying values, there is no clear and obvious overall trend in title length during this period. A least squares linear trend line is plotted (in red) and is nearly flat, supporting the notion that the average length of painting titles has remained fairly similar in modern art works over the past 150 years.**
+

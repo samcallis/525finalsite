@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+<meta charset="utf-8">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="320">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="description" content="Example blog">
+
+
+<meta property="og:site_name" content="Sam Callis" />
+<meta property="og:locale" content="en-US" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/projects/maps/" />
+<meta property="og:title" content="Maps" />
+<meta property="twitter:title" content="Maps">
+
+    <meta property="og:image" content="/img/banner.png">
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:image" content="/img/banner.png">
+
+<meta property="og:description" content="">
+<meta property="twitter:description" content="">
+
+<title>
+
+
+     Sam Callis - Maps 
+
+</title>
+<link rel="canonical" href="/projects/maps/">
+
+
+<style media="screen">
+  @font-face {
+  font-family: 'Nexa Bold';
+  src: url('/fonts/Nexa Bold.otf');
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section, div.column {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+a,
+a:visited,
+a:focus,
+a:active {
+  text-decoration: none;
+}
+html {
+  height: 100%;
+  font-size: 16px;
+}
+body {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: flex-start;
+  -moz-justify-content: flex-start;
+  -ms-justify-content: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 100%;
+  font-weight: 400;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  color: #111111;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility !important;
+}
+.icon {
+  text-rendering: geometricPrecision !important;
+}
+section {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  width: 100%;
+}
+div.column {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  width: 100%;
+}
+.container {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  width: 100%;
+}
+div.header .container {
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+}
+div.header .content {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+}
+div.header .container .logo {
+  
+  max-width: 100px;
+  
+  margin-left: -2em;
+}
+div.header .name {
+  padding-top: 20px;
+  font-size: 28px;
+  font-family: 'Nexa Bold', 'Helvetica Neue', 'Arial', sans-serif;
+  letter-spacing: -0.005rem;
+  
+  text-transform: uppercase;
+  
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  color: #333333;
+}
+div.header nav {
+  margin-bottom: 16px;
+}
+div.header nav ul {
+  list-style: none;
+  text-align: center;
+  display: -webkit-inline-flex;
+  display: -moz-inline-flex;
+  display: -ms-inline-flexbox;
+  display: -ms-inline-flex;
+  display: inline-flex;
+}
+div.header nav ul li {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+div.header nav ul li:first-child {
+  margin-left: 0;
+}
+div.header nav ul li:last-child {
+  margin-right: 0;
+}
+div.header nav ul a {
+  color: #555555;
+  font-weight: 400;
+  font-size: 14px;
+  text-transform: uppercase;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  -webkit-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -moz-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -ms-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -o-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+}
+div.header nav ul a:hover {
+  color: #111111;
+}
+div.footer .container {
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+  flex-direction: column-reverse;
+  width: 100%;
+  text-align: center;
+}
+div.footer .container a {
+  font-size: 14px;
+  margin-left: 6px;
+  margin-right: 6px;
+  opacity: 0.6;
+  -webkit-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -moz-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -ms-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -o-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+}
+div.footer .container a:first-child {
+  margin-left: 0;
+}
+div.footer .container a:last-child {
+  margin-right: 0;
+}
+div.footer .container a:hover {
+  opacity: 0.8;
+}
+div.footer .container a .icon {
+  width: 16px;
+  height: 16px;
+}
+div.footer .container .copyright {
+  flex-grow: 0.5;
+  text-align: start;
+}
+div.footer .container .icons {
+  flex-grow: 0.5;
+  text-align: end;
+}
+div.main .container {
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  -webkit-justify-content: flex-start;
+  -moz-justify-content: flex-start;
+  -ms-justify-content: flex-start;
+  justify-content: flex-start;
+}
+div.main .content {
+  color: #111111;
+  font-size: 16px;
+}
+div.main .content .title-container {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-justify-content: space-between;
+  -moz-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+}
+div.main .content .posts {
+  
+  
+}
+div.main .content .page-heading {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  letter-spacing: -0.005rem;
+  text-transform: uppercase;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  color: #333333;
+  margin-bottom: 16px;
+}
+div.main .content .front-matter .page-heading {
+  margin-bottom: 0;
+}
+div.main .content .front-matter .meta {
+  font-size: 14px;
+  color: #666666;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  margin-bottom: 32px;
+}
+div.main .content .front-matter .date,
+div.main .content .front-matter .author,
+div.main .content .front-matter .tags,
+div.main .content .front-matter .word-count,
+div.main .content .front-matter .middot:before {
+  display: none;
+}
+div.main .content .front-matter .middot:before {
+  font-size: 6px;
+  margin: 0 6px;
+  vertical-align: middle;
+  content: "•";
+}
+div.main .content .front-matter .tags ul {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+}
+div.main .content .front-matter .tags ul li {
+  -webkit-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -moz-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -ms-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -o-transition: opacity 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+}
+div.main .content .front-matter .tags ul li:hover {
+  opacity: 0.7;
+}
+div.main .content .front-matter .tags ul li a {
+  color: #666666;
+}
+
+div.main .container.f04 {
+  -webkit-justify-content: center;
+  -moz-justify-content: center;
+  -ms-justify-content: center;
+  justify-content: center;
+}
+div.main .container.f04 .content {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+}
+div.main .container.f04 .content .num {
+  margin: 30px 0px 30px 0;
+  font-weight: 400;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 50px;
+}
+div.main .container.f04 .content .detail {
+  margin-bottom: 40px;
+}
+div.main .container .content .groupby {
+  margin-top: 1em;
+  padding-left: 0.5em;
+}
+div.main .container .content .post-item {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  display: list-item;
+  list-style: disc inside;
+}
+div.main .container .content .post-item .meta {
+  font-size: 14px;
+  color: #666666;
+  display: none;
+  min-width: 100px;
+}
+div.main .container .content .see-more {
+  font-style: italic;
+  float: right;
+  font-size: 0.9em;
+  margin-top: 2em;
+  color: #313537;
+}
+div.main .container .content .see-more:hover {
+  color: #666;
+}
+section {
+  padding: 0 16px;
+}
+div.column {
+  padding: 0 16px;
+}
+div.header {
+  padding-top: 10px;
+}
+div.header-home {
+  padding-top: 36px;
+}
+div.main {
+  padding-top: 32px;
+}
+div.main .container .content .post-item .meta {
+    display: block;
+}
+div.main .container .content .post-item {
+    display: flex;
+    list-style: none;
+}
+a {
+  color: #428bca;
+  -webkit-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -moz-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -ms-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+  -o-transition: color 0.1s cubic-bezier(0.47, 0, 0.75, 0.72);
+}
+a:hover {
+  color: #2a6496;
+}
+img {
+  max-width: 100%;
+}
+div.main .content {
+    width: 100%;
+}
+div.main .content .markdown {
+  font-size: 1.1em;
+  line-height: 1.75em;
+  color: #313537;
+  font-family: serif;
+  font-weight: 300;
+}
+div.main .content .markdown h1,
+div.main .content .markdown h2,
+div.main .content .markdown h3,
+div.main .content .markdown h4,
+div.main .content .markdown h5,
+div.main .content .markdown h6 {
+  font-size: 22px;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  letter-spacing: -0.005rem;
+  font-weight: 700;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  color: #333333;
+  text-transform: none;
+  margin-top: 1.75rem;
+}
+div.main .content .markdown h1 {
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+}
+div.main .content .markdown h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+div.main .content .markdown h3 {
+  font-size: 1em;
+  margin-bottom: 1rem;
+}
+div.main .content .markdown h4,
+div.main .content .markdown h5,
+div.main .content .markdown h6 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  letter-spacing: none;
+}
+div.main .content .markdown code,
+div.main .content .markdown pre {
+  font-family: 'Menlo', monospace;
+  font-size: 0.98rem;
+  background-color: #f7f7f7;
+}
+div.main .content .markdown code {
+  /* enclosed by single backtick (`) */
+  padding: .15em .5em;
+  border-radius: 2px;
+}
+div.main .content .markdown pre {
+  /* Hugo specific: consider using the 'highlight' shortcode */
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  line-height: 1.5em;
+  white-space: pre;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+div.main .content .markdown pre code {
+  /* enclosed by 4 backticks (````) */
+  padding: 0;
+  font-size: 0.9rem;
+}
+div.main .content .markdown a code {
+  color: #428bca !important;
+}
+div.main .content .markdown a code:hover {
+  text-decoration: underline;
+}
+div.main .content .markdown p {
+  
+  text-align: justify;
+  
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+div.main .content .markdown ul,
+div.main .content .markdown ol,
+div.main .content .markdown dl {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+div.main .content .markdown dt {
+  font-weight: bold;
+}
+div.main .content .markdown dd {
+  margin-bottom: .5rem;
+}
+div.main .content .markdown ul {
+  list-style-type: disc;
+  list-style-position: outside;
+  margin-bottom: 1.25rem;
+}
+div.main .content .markdown ol {
+  list-style-type: decimal;
+  margin-bottom: 1.25rem;
+}
+div.main .content .markdown li {
+  margin-left: 2em;
+}
+div.main .content .markdown em {
+  font-style: italic;
+}
+div.main .content .markdown strong {
+  font-weight: 700;
+}
+div.main .content .markdown hr {
+  position: relative;
+  margin: 1.75rem 0;
+  border: 0;
+  border-top: 1px solid #808080;
+  border-top: 1px solid #999999;
+}
+div.main .content .markdown abbr {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #666666;
+  text-transform: uppercase;
+}
+div.main .content .markdown abbr[title] {
+  cursor: help;
+  border-bottom: 1px dotted #808080;
+}
+div.main .content .markdown blockquote {
+  padding: .5rem 1rem;
+  margin: .8rem 0;
+  color: #7a7a7a;
+  border-left: .25rem solid #e5e5e5;
+}
+div.main .content .markdown blockquote p:last-child {
+  margin-bottom: 0;
+}
+div.main .content .markdown figure {
+  width: 100%;
+  background: #fff;
+  margin-bottom: 1em;
+}
+div.main .content .markdown figure img {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  position: static;
+  margin: auto;
+}
+div.main .content .markdown table {
+  margin-bottom: 1rem;
+  width: 100%;
+  border: 1px solid #e5e5e5;
+  border-collapse: collapse;
+}
+div.main .content .markdown td,
+div.main .content .markdown th {
+  padding: .25rem .5rem;
+  border: 1px solid #e5e5e5;
+}
+div.main .content .markdown tbody tr:nth-child(odd) td,
+div.main .content .markdown tbody tr:nth-child(odd) th {
+  background-color: #f7f7f7;
+}
+div.main .content .markdown .footnotes ol {
+  list-style-type: decimal;
+  margin-left: 16px;
+}
+div.main .content .markdown .footnotes li {
+  list-style-type: unset;
+}
+div.main .content .markdown .footnote-ref {
+  font-size: 0.7em;
+}
+div.main .content .navigation {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  -moz-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  padding: 2em;
+}
+div.main .content .navigation div {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  margin-top: 1em;
+}
+div.main .content .navigation .icon {
+  width: 16px;
+  height: 16px;
+}
+div.main .content .navigation a {
+  width: 250px;
+  margin: 0 1em;
+  text-align: center;
+  font-style: italic;
+  color: #313537;
+}
+div.main .content .share, div.main .content .share div {
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: -ms-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -moz-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  -ms-align-items: center;
+  align-items: center;
+  justify-content: center;
+}
+div.main .content .share {
+  background-color: rgba(152, 152, 152, 0.07);
+  padding: 1em 0;
+}
+div.main .content .share a {
+  margin: 0 6px;
+}
+kbd {
+  padding: 0.1em 0.6em;
+  border: 1px solid #ccc;
+  font-size: 11px;
+  font-family: Arial,Helvetica,sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  -moz-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px #ffffff inset;
+  -webkit-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px #ffffff inset;
+  box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px #ffffff inset;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  display: inline-block;
+  margin: 0 0.1em;
+  text-shadow: 0 1px 0 #fff;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Fonts */
+
+
+.wf-raleway-n4-active body, 
+.wf-raleway-n4-active div.header nav ul a,
+.wf-raleway-n7-active div.main .content .page-heading,
+.wf-raleway-n2-active div.main .container.f04 .content .num,
+.wf-raleway-n7-active div.main .content .markdown h1,
+.wf-raleway-n7-active div.main .content .markdown h2,
+.wf-raleway-n7-active div.main .content .markdown h3,
+.wf-raleway-n7-active div.main .content .markdown h4,
+.wf-raleway-n7-active div.main .content .markdown h5,
+.wf-raleway-n7-active div.main .content .markdown h6 {
+      font-family: 'Raleway';
+}
+
+.wf-merriweather-n3-active div.main .content .markdown {
+      font-family: 'Merriweather';
+}
+
+.wf-ubuntu-mono-n4-active div.main .content .markdown code,
+.wf-ubuntu-mono-n4-active div.main .content .markdown pre {
+      font-family: 'Ubuntu Mono';
+}
+
+
+</style>
+<style media="(min-width: 600px)">
+  body {
+-webkit-justify-content: center;
+-moz-justify-content: center;
+-ms-justify-content: center;
+justify-content: center;
+}
+.non-narrow.zero-top-spacing {
+padding-top: 0 !important;
+}
+section {
+padding: 0 16px;
+margin-left: 100px;
+margin-right: 100px;
+
+max-width: 750px;
+
+}
+div.column {
+padding: 0 16px;
+
+max-width: 750px;
+
+}
+div.header {
+background-color: transparent;
+}
+div.header .container {
+-webkit-justify-content: flex-start;
+-moz-justify-content: flex-start;
+-ms-justify-content: flex-start;
+justify-content: flex-start;
+}
+div.header .container .logo {
+margin: 0;
+}
+div.header-home .container .logo {
+max-width: 216px;
+margin-left: 24px;
+}
+div.header-home .name-home {
+padding-top: 30px;
+font-size: 40px;
+}
+div.header-home nav ul a {
+font-size: 18px;
+}
+div.header .content {
+-webkit-align-items: flex-start;
+-moz-align-items: flex-start;
+-ms-align-items: flex-start;
+align-items: flex-start;
+}
+div.header .name {
+color: #333333;
+}
+div.header nav {
+font-size: 14px;
+margin-bottom: 0;
+}
+div.header nav ul {
+text-align: left;
+}
+div.header nav ul a {
+color: #666666;
+}
+div.header nav ul a:hover {
+color: #333333;
+}
+div.footer {
+background-color: transparent;
+}
+div.footer .container {
+flex-direction: row;
+}
+div.footer .container a {
+margin-left: 3px;
+margin-right: 3px;
+color: #666666;
+}
+div.footer .container a:hover {
+color: #333333;
+}
+div.footer .container a .icon {
+font-size: 18px;
+}
+div.footer .container a .icon.larger {
+font-size: 20px;
+}
+div.main .content .front-matter .date,
+div.main .content .front-matter .author,
+div.main .content .front-matter .tags,
+div.main .content .front-matter .word-count,
+div.main .content .front-matter .middot:before {
+display: initial;
+}
+div.main .container.f04 {
+-webkit-justify-content: flex-start;
+-moz-justify-content: flex-start;
+-ms-justify-content: flex-start;
+justify-content: flex-start;
+}
+div.main .container.f04 .content {
+-webkit-align-items: flex-start;
+-moz-align-items: flex-start;
+-ms-align-items: flex-start;
+align-items: flex-start;
+}
+div.main .container.f04 .content .num {
+margin: 0 0 10px 0;
+font-size: 32px;
+}
+div.main .container.f04 .content .detail {
+margin-bottom: 30px;
+}
+.container {
+padding: 0 30px;
+}
+div.header {
+padding-top: 60px;
+padding-bottom: 60px;
+}
+div.footer {
+padding-top: 60px;
+padding-bottom: 60px;
+}
+div.main {
+padding-top: 0;
+}
+div.main .content {
+  
+  font-size: 16px;
+  
+}
+div.main .container .content .post-item {
+display: flex;
+list-style: none;
+padding-left: 1.5em;
+}
+div.main .container .content .post-item .meta {
+display: block;
+}
+div.main .content .markdown blockquote {
+padding-right: 5rem;
+padding-left: 1.25rem;
+}
+div.main .content .navigation {
+-webkit-flex-direction: row;
+-moz-flex-direction: row;
+-ms-flex-direction: row;
+flex-direction: row;
+}
+div.main .content .navigation div {
+margin-top: 0em;
+}
+
+</style>
+<style media="(min-width: 769px)">
+  div.main .content .markdown figure {
+width: 110%;
+margin-left: -4%;
+}
+div.main .content .markdown img {
+max-width: 110%;
+width: 110%;
+margin-left: -4%;
+}
+div.main .content .markdown pre {
+width: 110%;
+margin-left: -4%;
+}
+
+</style>
+
+<noscript>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:400,600,700" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,700,700i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700" rel="stylesheet">
+</noscript>
+
+
+  <style type="text/css" media="screen">
+    .hljs{display:block;background:white;padding:0.5em;color:#333333;overflow-x:auto}.hljs-comment,.hljs-meta{color:#969896}.hljs-string,.hljs-variable,.hljs-template-variable,.hljs-strong,.hljs-emphasis,.hljs-quote{color:#df5000}.hljs-keyword,.hljs-selector-tag,.hljs-type{color:#a71d5d}.hljs-literal,.hljs-symbol,.hljs-bullet,.hljs-attribute{color:#0086b3}.hljs-section,.hljs-name{color:#63a35c}.hljs-tag{color:#333333}.hljs-title,.hljs-attr,.hljs-selector-id,.hljs-selector-class,.hljs-selector-attr,.hljs-selector-pseudo{color:#795da3}.hljs-addition{color:#55a532;background-color:#eaffea}.hljs-deletion{color:#bd2c00;background-color:#ffecec}.hljs-link{text-decoration:underline}
+  </style>
+
+
+
+  <style type="text/css" media="screen">
+    .progressive{overflow:hidden;position:relative;background:#efefef}.progressive__img{width:100%;height:100%;transform:translateZ(0)}.progressive--not-loaded{filter:blur(30px)}.progressive--is-loaded{filter:blur(20px);animation:a .5s both}@keyframes a{0%{filter:blur(20px)}to{filter:blur(0)}}
+
+  </style>
+
+
+
+  <style type="text/css" media="screen">
+    /*!
+ * Social Share Kit v1.0.7 (http://socialsharekit.com)
+ * Copyright 2015 Social Share Kit / Kaspars Sprogis.
+ * Licensed under Creative Commons Attribution-NonCommercial 3.0 license:
+ * https://github.com/darklow/social-share-kit/blob/master/LICENSE
+ * ---
+ */@font-face{font-family:'social-share-kit';src:url('/fonts/social-share-kit.eot');src:url('/fonts/social-share-kit.eot?#iefix') format('embedded-opentype'),url('/fonts/social-share-kit.woff') format('woff'),url('/fonts/social-share-kit.ttf') format('truetype'),url('/fonts/social-share-kit.svg#social-share-kit') format('svg');font-weight:normal;font-style:normal}.ssk:before{display:inline-block;font-family:"social-share-kit" !important;font-style:normal !important;font-weight:normal !important;font-variant:normal !important;text-transform:none !important;speak:none;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.ssk-facebook:before{content:"a";text-indent:4px;margin-right:-4px}.ssk-twitter:before{content:"b"}.ssk-google-plus:before{content:"v"}.ssk-google-plus-old:before{content:"c"}.ssk-email:before{content:"d";top:-1px;position:relative}.ssk-pinterest:before{content:"e"}.ssk-tumblr:before{content:"f"}.ssk-linkedin:before{content:"g"}.ssk-github:before{content:"h"}.ssk-vk:before{content:"i"}.ssk-instagram:before{content:"j"}.ssk-amazon:before{content:"k"}.ssk-skype:before{content:"s"}.ssk-youtube:before{content:"x"}.ssk-vimeo:before{content:"u"}.ssk-ebay:before{content:"p"}.ssk-apple:before{content:"l"}.ssk-behance:before{content:"q"}.ssk-dribble:before{content:"n"}.ssk-android:before{content:"o"}.ssk-whatsapp:before{content:"m"}.ssk-reddit:before{content:"r"}.ssk-reddit2:before{content:"t"}.ssk-link:before{content:"w"}.ssk{background-color:#757575;color:white;display:inline-block;font-size:22px;line-height:1px;margin-right:2px;margin-bottom:2px;padding:7px;text-align:center;text-decoration:none;transition:background-color .1s;-webkit-transition:background-color .1s;-moz-transition:background-color .1s;-ms-transition:background-color .1s;-o-transition:background-color .1s}.ssk:before,.ssk .glyphicon,.ssk .fa{position:relative;font-size:22px;top:0;vertical-align:middle}.ssk.ssk-xs,.ssk-xs>.ssk{padding:4px}.ssk.ssk-xs:before,.ssk-xs>.ssk:before,.ssk.ssk-xs .glyphicon,.ssk-xs>.ssk .glyphicon,.ssk.ssk-xs .fa,.ssk-xs>.ssk .fa{font-size:15px}.ssk.ssk-sm,.ssk-sm>.ssk{padding:5px}.ssk.ssk-sm:before,.ssk-sm>.ssk:before,.ssk.ssk-sm .glyphicon,.ssk-sm>.ssk .glyphicon,.ssk.ssk-sm .fa,.ssk-sm>.ssk .fa{font-size:20px}.ssk.ssk-lg,.ssk-lg>.ssk{padding:9px}.ssk.ssk-lg:before,.ssk-lg>.ssk:before,.ssk.ssk-lg .glyphicon,.ssk-lg>.ssk .glyphicon,.ssk.ssk-lg .fa,.ssk-lg>.ssk .fa{font-size:28px}.ssk:last-child{margin-right:0}.ssk:hover{background-color:#424242}.ssk:hover,.ssk:focus{color:#fff;text-decoration:none}.ssk.ssk-round,.ssk-round .ssk{border-radius:50%}.ssk.ssk-round:before,.ssk-round .ssk:before{text-indent:0;margin-right:0}.ssk.ssk-rounded,.ssk-rounded .ssk{border-radius:15%}.ssk.ssk-icon{color:#757575;padding:2px;font-size:24px}.ssk.ssk-icon,.ssk.ssk-icon:hover{background-color:transparent}.ssk.ssk-icon:hover{color:#424242}.ssk.ssk-icon.ssk-xs,.ssk-xs>.ssk.ssk-icon{font-size:16px}.ssk.ssk-icon.ssk-sm,.ssk-sm>.ssk.ssk-icon{font-size:20px}.ssk.ssk-icon.ssk-lg,.ssk-lg>.ssk.ssk-icon{font-size:28px}.ssk.ssk-text{overflow:hidden;font-size:17px;line-height:normal;padding-right:10px}.ssk.ssk-text:before,.ssk.ssk-text .glyphicon,.ssk.ssk-text .fa{margin:-7px 10px -7px -7px;padding:7px;background-color:rgba(0,0,0,0.15);vertical-align:bottom;text-indent:0}.ssk-block .ssk.ssk-text{display:block;margin-right:0;text-align:left}.ssk.ssk-text.ssk-xs,.ssk-xs>.ssk.ssk-text{font-size:12px;padding-right:6px}.ssk.ssk-text.ssk-xs:before,.ssk-xs>.ssk.ssk-text:before,.ssk.ssk-text.ssk-xs .glyphicon,.ssk-xs>.ssk.ssk-text .glyphicon,.ssk.ssk-text.ssk-xs .fa,.ssk-xs>.ssk.ssk-text .fa{margin:-4px 6px -4px -4px;padding:4px}.ssk.ssk-text.ssk-sm,.ssk-sm>.ssk.ssk-text{font-size:16px;padding-right:7px}.ssk.ssk-text.ssk-sm:before,.ssk-sm>.ssk.ssk-text:before,.ssk.ssk-text.ssk-sm .glyphicon,.ssk-sm>.ssk.ssk-text .glyphicon,.ssk.ssk-text.ssk-sm .fa,.ssk-sm>.ssk.ssk-text .fa{margin:-5px 7px -5px -5px;padding:5px}.ssk.ssk-text.ssk-lg,.ssk-lg>.ssk.ssk-text{font-size:22px;padding-right:13px}.ssk.ssk-text.ssk-lg:before,.ssk-lg>.ssk.ssk-text:before,.ssk.ssk-text.ssk-lg .glyphicon,.ssk-lg>.ssk.ssk-text .glyphicon,.ssk.ssk-text.ssk-lg .fa,.ssk-lg>.ssk.ssk-text .fa{margin:-9px 13px -9px -9px;padding:9px}.ssk-group,.ssk-sticky{font-size:0}.ssk-sticky{top:0;position:fixed;z-index:2000}.ssk-sticky .ssk{transition:padding .1s ease-out;-webkit-transition:padding .1s ease-out;-moz-transition:padding .1s ease-out;-ms-transition:padding .1s ease-out;-o-transition:padding .1s ease-out;margin:0}@media (min-width:768px){.ssk-sticky.ssk-left .ssk,.ssk-sticky.ssk-right .ssk{display:block;clear:both}.ssk-sticky.ssk-left.ssk-center,.ssk-sticky.ssk-right.ssk-center{top:50%;transform:translateY(-50%);-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%)}.ssk-sticky.ssk-left{left:0}.ssk-sticky.ssk-left .ssk{float:left}.ssk-sticky.ssk-left .ssk:hover{padding-left:15px}.ssk-sticky.ssk-right{right:0}.ssk-sticky.ssk-right .ssk{float:right}.ssk-sticky.ssk-right .ssk:hover{padding-right:15px}}.ssk-sticky.ssk-bottom{font-size:0;top:auto;bottom:0}.ssk-sticky.ssk-bottom.ssk-center{left:50%;right:auto;transform:translateX(-50%);-webkit-transform:translateX(-50%);-moz-transform:translateX(-50%);-ms-transform:translateX(-50%);-o-transform:translateX(-50%)}.ssk-sticky.ssk-bottom .ssk{vertical-align:bottom}.ssk-sticky.ssk-bottom .ssk:hover{padding-bottom:15px}.ssk-sticky.ssk-round.ssk-xs .ssk:hover{padding:8px}.ssk-sticky.ssk-round.ssk-sm .ssk:hover{padding:9px}.ssk-sticky.ssk-round .ssk:hover{padding:11px}.ssk-sticky.ssk-round.ssk-lg .ssk:hover{padding:13px}@media (max-width:767px){.ssk-sticky{left:0;right:0;bottom:0;top:auto;width:100%;display:flex !important;flex-direction:row;flex-wrap:nowrap}.ssk-sticky.ssk-sticky-hide-xs{display:none !important}.ssk-sticky .ssk{flex:1;width:auto}.ssk-sticky .ssk .ssk-num{display:none}}.ssk-count{padding-top:20px}.ssk-count .ssk{position:relative}.ssk-count .ssk-num{border-radius:4px;color:#8f8f8f;background-color:rgba(50,50,50,0.03);display:block;font-size:12px;left:0;line-height:20px;position:absolute;right:0;text-align:center;top:-20px}@media (min-width:768px){.ssk-count.ssk-sticky{padding-top:0}.ssk-count.ssk-sticky.ssk-left .ssk-num,.ssk-count.ssk-sticky.ssk-right .ssk-num{top:20%;background-color:transparent}.ssk-count.ssk-sticky.ssk-left .ssk-num{left:100%;margin-left:5px}.ssk-count.ssk-sticky.ssk-right .ssk-num{right:115%;margin-left:-100%;text-align:right}}.ssk-facebook{background-color:#3B5998}.ssk-grayscale>.ssk-facebook{background-color:#757575}.ssk-facebook:hover{background-color:#2d4373}.ssk-facebook:hover{background-color:#2d4373}.ssk-grayscale>.ssk-facebook:hover{background-color:#3B5998}.ssk-facebook.ssk-icon{color:#3B5998}.ssk-facebook.ssk-icon:hover{color:#2d4373}.ssk-facebook.ssk-icon:before{text-indent:0;margin-right:0}.ssk-twitter{background-color:#1DA1F2}.ssk-grayscale>.ssk-twitter{background-color:#757575}.ssk-twitter:hover{background-color:#0c85d0}.ssk-twitter:hover{background-color:#0c85d0}.ssk-grayscale>.ssk-twitter:hover{background-color:#1DA1F2}.ssk-twitter.ssk-icon{color:#1DA1F2}.ssk-twitter.ssk-icon:hover{color:#0c85d0}.ssk-google-plus{background-color:#EA4335}.ssk-grayscale>.ssk-google-plus{background-color:#757575}.ssk-google-plus:hover{background-color:#d62516}.ssk-google-plus:hover{background-color:#d62516}.ssk-grayscale>.ssk-google-plus:hover{background-color:#EA4335}.ssk-google-plus.ssk-icon{color:#EA4335}.ssk-google-plus.ssk-icon:hover{color:#d62516}.ssk-pinterest{background-color:#BD081C}.ssk-grayscale>.ssk-pinterest{background-color:#757575}.ssk-pinterest:hover{background-color:#8c0615}.ssk-pinterest:hover{background-color:#8c0615}.ssk-grayscale>.ssk-pinterest:hover{background-color:#BD081C}.ssk-pinterest.ssk-icon{color:#BD081C}.ssk-pinterest.ssk-icon:hover{color:#8c0615}.ssk-tumblr{background-color:#395773}.ssk-grayscale>.ssk-tumblr{background-color:#757575}.ssk-tumblr:hover{background-color:#283d51}.ssk-tumblr:hover{background-color:#283d51}.ssk-grayscale>.ssk-tumblr:hover{background-color:#395773}.ssk-tumblr.ssk-icon{color:#395773}.ssk-tumblr.ssk-icon:hover{color:#283d51}.ssk-email{background-color:#757575}.ssk-grayscale>.ssk-email{background-color:#757575}.ssk-email:hover{background-color:#5b5b5b}.ssk-email:hover{background-color:#5b5b5b}.ssk-grayscale>.ssk-email:hover{background-color:#757575}.ssk-grayscale>.ssk-email:hover{background-color:#5b5b5b}.ssk-email.ssk-icon{color:#757575}.ssk-email.ssk-icon:hover{color:#5b5b5b}.ssk-vk{background-color:#54769a}.ssk-grayscale>.ssk-vk{background-color:#757575}.ssk-vk:hover{background-color:#425d79}.ssk-vk:hover{background-color:#425d79}.ssk-grayscale>.ssk-vk:hover{background-color:#54769a}.ssk-vk.ssk-icon{color:#54769a}.ssk-vk.ssk-icon:hover{color:#425d79}.ssk-linkedin{background-color:#1c87bd}.ssk-grayscale>.ssk-linkedin{background-color:#757575}.ssk-linkedin:hover{background-color:#156791}.ssk-linkedin:hover{background-color:#156791}.ssk-grayscale>.ssk-linkedin:hover{background-color:#1c87bd}.ssk-linkedin.ssk-icon{color:#1c87bd}.ssk-linkedin.ssk-icon:hover{color:#156791}.ssk-whatsapp{background-color:#34AF23}.ssk-grayscale>.ssk-whatsapp{background-color:#757575}.ssk-whatsapp:hover{background-color:#27851a}.ssk-whatsapp:hover{background-color:#27851a}.ssk-grayscale>.ssk-whatsapp:hover{background-color:#34AF23}.ssk-whatsapp.ssk-icon{color:#34AF23}.ssk-whatsapp.ssk-icon:hover{color:#27851a}.ssk-reddit{background-color:#5f99cf}.ssk-grayscale>.ssk-reddit{background-color:#757575}.ssk-reddit:hover{background-color:#3a80c1}.ssk-reddit:hover{background-color:#3a80c1}.ssk-grayscale>.ssk-reddit:hover{background-color:#5f99cf}.ssk-reddit.ssk-icon{color:#5f99cf}.ssk-reddit.ssk-icon:hover{color:#3a80c1}.ssk-reddit2{background-color:#5f99cf}.ssk-grayscale>.ssk-reddit2{background-color:#757575}.ssk-reddit2:hover{background-color:#3a80c1}.ssk-reddit2:hover{background-color:#3a80c1}.ssk-grayscale>.ssk-reddit2:hover{background-color:#5f99cf}.ssk-reddit2.ssk-icon{color:#5f99cf}.ssk-reddit2.ssk-icon:hover{color:#3a80c1}.ssk-turquoise{background-color:#1abc9c}.ssk-turquoise:hover{background-color:#148f77}.ssk-emerald{background-color:#2ecc71}.ssk-emerald:hover{background-color:#25a25a}.ssk-peter-river{background-color:#3498db}.ssk-peter-river:hover{background-color:#217dbb}.ssk-belize-hole{background-color:#2980b9}.ssk-belize-hole:hover{background-color:#20638f}.ssk-amethyst{background-color:#9b59b6}.ssk-amethyst:hover{background-color:#804399}.ssk-wisteria{background-color:#8e44ad}.ssk-wisteria:hover{background-color:#703688}.ssk-wet-asphalt{background-color:#34495e}.ssk-wet-asphalt:hover{background-color:#222f3d}.ssk-midnight-blue{background-color:#2c3e50}.ssk-midnight-blue:hover{background-color:#1a242f}.ssk-green-sea{background-color:#16a085}.ssk-green-sea:hover{background-color:#107360}.ssk-nephritis{background-color:#27ae60}.ssk-nephritis:hover{background-color:#1e8449}.ssk-sunflower{background-color:#f1c40f}.ssk-sunflower:hover{background-color:#c29d0b}.ssk-orange{background-color:#f39c12}.ssk-orange:hover{background-color:#c87f0a}.ssk-carrot{background-color:#e67e22}.ssk-carrot:hover{background-color:#bf6516}.ssk-pumpkin{background-color:#d35400}.ssk-pumpkin:hover{background-color:#a04000}.ssk-alizarin{background-color:#e74c3c}.ssk-alizarin:hover{background-color:#d62c1a}.ssk-pomegranate{background-color:#c0392b}.ssk-pomegranate:hover{background-color:#962d22}.ssk-clouds{background-color:#cfd9db}.ssk-clouds:hover{background-color:#b1c2c6}.ssk-concrete{background-color:#95a5a6}.ssk-concrete:hover{background-color:#798d8f}.ssk-silver{background-color:#bdc3c7}.ssk-silver:hover{background-color:#a1aab0}.ssk-asbestos{background-color:#7f8c8d}.ssk-asbestos:hover{background-color:#667273}.ssk-dark-gray{background-color:#555}.ssk-dark-gray:hover{background-color:#3b3b3b}.ssk-black{background-color:#333}.ssk-black:hover{background-color:#1a1a1a}
+  </style>
+
+
+
+  <style type="text/css" media="screen">
+    a {
+    color: #09A051;
+}
+
+a:hover {
+    color: #00803D;
+}
+
+div.main .content .markdown, div.header .name, div.header nav ul a:hover {
+    color: #3F3C33;
+}
+
+div.header nav ul a {
+    color: #1912A5;
+}
+
+div.main .content .markdown code {
+    background-color: #FFDAA5;
+    color: #09A051;
+}
+
+div.main .content .markdown pre, div.main .content .markdown pre code {
+    background-color: #282a36;
+    color: #87a5d2;
+}
+
+.hljs, .hljs-subst, .hljs-variable {
+    color: #87a5d2;
+}
+
+.hljs-type {
+    color: #0EAA8A;
+}
+
+.hljs-quote {
+    color: #ffcb8d;
+}
+
+.hljs-string, .hljs-number, .hljs-selector-id, .hljs-selector-class, .hljs-template-tag, .hljs-deletion {
+    color: #0EAA8A;
+}
+
+.hljs-comment {
+    color: #1912A5;
+}
+
+.hljs-regexp, .hljs-symbol, .hljs-template-variable {
+    color: #ffcb8d;
+}
+
+.hljs-keyword, .hljs-attribute, .hljs-meta-keyword, .hljs-doctag, .hljs-name {
+    color: #0EAA8A;
+}
+
+.hljs-link, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-title, .hljs-section {
+    color: #0EAA8A;
+}
+
+.hljs-built_in, .hljs-bullet, .hljs-code, .hljs-addition {
+    color: #0EAA8A;
+}
+
+.ssk {
+    background-color: #1912A5;
+}
+
+  </style>
+
+
+
+
+
+<link rel="shortcut icon"
+
+    href="/img/favicon.ico"
+
+>
+
+</head>
+
+
+<body>
+
+
+<div class="header column">
+
+    <div class="container">
+        
+        <a href="/"><img class="logo" src="/img/billie.png" alt="logo"></a>
+        
+        <div class="content">
+            <a href="/"><div class="name"><h1>Sam Callis</h1></div></a>
+            <nav>
+                <ul>
+                    
+                    
+                        
+                            
+                            <li><a href="/projects">projects</a></li>
+                            
+                        
+                    
+                    
+                        
+                            <li><a href="/about/">About</a></li>
+                        
+                    
+                        
+                    
+                        
+                    
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="main column">
+    <div class="container">
+        <div class="content">
+            <div class="page-heading">
+
+    
+    Maps
+    
+
+</div>
+
+            <div class="markdown">
+                
+    
+    
+
+
+<p>Here we will take a look at our data:</p>
+<pre class="r"><code>trees_raw &lt;- read.csv(here::here(&quot;data&quot;, &quot;Parks_Tree_Inventory.csv&quot;))
+glimpse(trees_raw)</code></pre>
+<pre><code>## Rows: 25,534
+## Columns: 41
+## $ X                          &lt;dbl&gt; -13658194, -13658213, -13658254, -13658227,…
+## $ Y                          &lt;dbl&gt; 5712487, 5712485, 5712491, 5712487, 5712488…
+## $ OBJECTID                   &lt;int&gt; 426, 427, 428, 429, 430, 431, 432, 433, 434…
+## $ Inventory_Date             &lt;chr&gt; &quot;2017/05/09 00:00:00+00&quot;, &quot;2017/05/09 00:00…
+## $ Species                    &lt;chr&gt; &quot;PSME&quot;, &quot;PSME&quot;, &quot;CRLA&quot;, &quot;QURU&quot;, &quot;PSME&quot;, &quot;PS…
+## $ DBH                        &lt;dbl&gt; 37.4, 32.5, 9.7, 10.3, 33.2, 32.1, 28.4, 27…
+## $ Condition                  &lt;chr&gt; &quot;Fair&quot;, &quot;Fair&quot;, &quot;Fair&quot;, &quot;Poor&quot;, &quot;Fair&quot;, &quot;Fa…
+## $ TreeHeight                 &lt;int&gt; 105, 94, 23, 28, 102, 95, 103, 105, 97, 112…
+## $ CrownWidthNS               &lt;int&gt; 44, 49, 28, 38, 43, 35, 40, 45, 56, 35, 45,…
+## $ CrownWidthEW               &lt;int&gt; 57, 45, 27, 31, 44, 39, 40, 29, 45, 33, 50,…
+## $ CollectedBy                &lt;chr&gt; &quot;staff&quot;, &quot;staff&quot;, &quot;staff&quot;, &quot;staff&quot;, &quot;staff&quot;…
+## $ Notes                      &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,…
+## $ CrownBaseHeight            &lt;int&gt; 4, 4, 3, 5, 4, 12, 6, 13, 5, 17, 6, 6, 4, 5…
+## $ GlobalID                   &lt;chr&gt; &quot;{8413C6D7-038A-4685-AFCB-C3BCE4D90A24}&quot;, &quot;…
+## $ StaffReview                &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,…
+## $ created_user               &lt;chr&gt; &quot;PARKS_ADMIN&quot;, &quot;PARKS_ADMIN&quot;, &quot;PARKS_ADMIN&quot;…
+## $ created_date               &lt;chr&gt; &quot;2017/05/23 19:37:43+00&quot;, &quot;2017/05/23 19:37…
+## $ last_edited_user           &lt;chr&gt; &quot;PKJOSHUA&quot;, &quot;PKJOSHUA&quot;, &quot;PKJOSHUA&quot;, &quot;PKJOSH…
+## $ last_edited_date           &lt;chr&gt; &quot;2019/12/11 00:42:17+00&quot;, &quot;2019/12/11 00:42…
+## $ UserID                     &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, …
+## $ Structural_Value           &lt;dbl&gt; 10101.06, 7900.55, 1110.81, 525.26, 8224.54…
+## $ Carbon_Storage_lb          &lt;dbl&gt; 3223.3, 2460.8, 310.3, 400.1, 2533.4, 2333.…
+## $ Carbon_Storage_value       &lt;dbl&gt; 209.07, 159.62, 20.13, 25.95, 164.33, 151.3…
+## $ Carbon_Sequestration_lb    &lt;dbl&gt; 36.8, 31.3, 14.8, 6.0, 32.0, 30.8, 26.8, 25…
+## $ Carbon_Sequestration_value &lt;dbl&gt; 2.39, 2.03, 0.96, 0.39, 2.08, 2.00, 1.74, 1…
+## $ Stormwater_ft              &lt;dbl&gt; 150.3, 133.0, 35.4, 38.3, 115.5, 85.3, 99.7…
+## $ Stormwater_value           &lt;dbl&gt; 10.05, 8.89, 2.37, 2.56, 7.72, 5.70, 6.66, …
+## $ Pollution_Removal_value    &lt;dbl&gt; 18.25, 16.15, 4.31, 4.65, 14.03, 10.36, 12.…
+## $ Pollution_Removal_oz       &lt;dbl&gt; 40.4, 35.8, 9.5, 10.3, 31.1, 22.9, 26.8, 22…
+## $ Total_Annual_Benefits      &lt;dbl&gt; 30.69, 27.06, 7.64, 7.59, 23.82, 18.06, 20.…
+## $ Family                     &lt;chr&gt; &quot;Pinaceae&quot;, &quot;Pinaceae&quot;, &quot;Rosaceae&quot;, &quot;Fagace…
+## $ Genus                      &lt;chr&gt; &quot;Pseudotsuga&quot;, &quot;Pseudotsuga&quot;, &quot;Crataegus&quot;, …
+## $ Common_name                &lt;chr&gt; &quot;Douglas-fir&quot;, &quot;Douglas-fir&quot;, &quot;Lavalle hawt…
+## $ Genus_species              &lt;chr&gt; &quot;Pseudotsuga menziesii&quot;, &quot;Pseudotsuga menzi…
+## $ Functional_type            &lt;chr&gt; &quot;CE&quot;, &quot;CE&quot;, &quot;BD&quot;, &quot;BD&quot;, &quot;CE&quot;, &quot;CE&quot;, &quot;CE&quot;, &quot;…
+## $ Size                       &lt;chr&gt; &quot;L&quot;, &quot;L&quot;, &quot;S&quot;, &quot;L&quot;, &quot;L&quot;, &quot;L&quot;, &quot;L&quot;, &quot;L&quot;, &quot;L&quot;…
+## $ Native                     &lt;chr&gt; &quot;Yes&quot;, &quot;Yes&quot;, &quot;No&quot;, &quot;No&quot;, &quot;Yes&quot;, &quot;Yes&quot;, &quot;Ye…
+## $ Edible                     &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,…
+## $ Nuisance                   &lt;chr&gt; &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;, &quot;&quot;,…
+## $ Origin                     &lt;chr&gt; &quot;North America - from British Columbia sout…
+## $ Species_factoid            &lt;chr&gt; &quot;Bracts on cones look like a mouse&#39;s feet a…</code></pre>
+<pre class="r"><code># shape file
+trees &lt;- st_read(here::here(&quot;data&quot;, &quot;Parks_Tree_Inventory-shp&quot;))</code></pre>
+<pre><code>## Reading layer `fd3ad191-4bf0-4577-b6ec-724baeb619792020413-1-a3eocm.isio&#39; from data source `/Users/samcallis/Documents/OHSU/R/Spring22/project/data/Parks_Tree_Inventory-shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 25534 features and 39 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -13667450 ymin: 5692149 xmax: -13635010 ymax: 5724486
+## Projected CRS: WGS 84 / Pseudo-Mercator</code></pre>
+<pre class="r"><code># load in city files
+pdx &lt;- st_read(here::here(&quot;data&quot;, &quot;Neighborhoods__Regions_-shp&quot;))</code></pre>
+<pre><code>## Reading layer `Neighborhoods__Regions_&#39; from data source 
+##   `/Users/samcallis/Documents/OHSU/R/Spring22/project/data/Neighborhoods__Regions_-shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 98 features and 10 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -13677560 ymin: 5689875 xmax: -13632920 ymax: 5724919
+## Projected CRS: WGS 84 / Pseudo-Mercator</code></pre>
+<pre class="r"><code>rivers &lt;- st_read(here::here(&quot;data&quot;, &quot;Willamette_Columbia_River_Ordinary_High_Water-shp&quot;))</code></pre>
+<pre><code>## Reading layer `Willamette_Columbia_River_Ordinary_High_Water&#39; from data source 
+##   `/Users/samcallis/Documents/OHSU/R/Spring22/project/data/Willamette_Columbia_River_Ordinary_High_Water-shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 1 feature and 5 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -13676470 ymin: 5686111 xmax: -13632810 ymax: 5727803
+## Projected CRS: WGS 84 / Pseudo-Mercator</code></pre>
+<pre class="r"><code>pdx %&gt;%
+  ggplot() +
+  geom_sf()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<div id="challenge-1" class="section level1">
+<h1>Challenge 1</h1>
+<p>Map centered on your neighborhood!</p>
+<pre class="r"><code>pdx %&gt;% ggplot() + 
+  geom_sf() + 
+  coord_sf(
+    xlim=c(-13656000,-13650800), 
+    ylim=c(5703577, 5706277)) +
+    geom_sf_label(aes(label=MAPLABEL)) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><strong>Comment:</strong> This map is centered on Kerns! The best neighborhood in Portland if you ask me.</p>
+</div>
+<div id="challenge-2" class="section level1">
+<h1>Challenge 2</h1>
+<p>Changing river and neighborhood color!</p>
+<pre class="r"><code>pdx %&gt;% 
+  ggplot() + 
+  geom_sf(fill = &quot;mistyrose2&quot;, alpha = 0.6) + 
+  geom_sf(data=rivers, fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.8) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><strong>Comment:</strong> By changing the transparency of the neighborhood boundary fill, we can see that there is some overlap in the GIS shape files, so some of our area belongs to two neighborhoods.</p>
+</div>
+<div id="challenge-3" class="section level1">
+<h1>Challenge 3</h1>
+<p>Experiment with projections!</p>
+<pre class="r"><code>world1 &lt;- sf::st_as_sf(map(&#39;world&#39;, plot = FALSE, fill = TRUE))
+ggplot() + 
+  geom_sf(data = world1)</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>## lambert azimuthal equal area projection - centered on portland
+lambert_pdx &lt;- sf::st_transform(
+  world1,
+  &quot;+proj=laea +lat_0=45.5 +lon_0=-122.65 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs &quot;
+)
+ggplot() + 
+  geom_sf(data = lambert_pdx)</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-6-2.png" width="672" /></p>
+<pre class="r"><code>## lambert azimuthal equal area projection - centered on Sydney, Australia
+lambert_aus &lt;- sf::st_transform(
+  world1,
+  &quot;+proj=laea +lat_0=-33.8688 +lon_0=151.2093 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs &quot;
+)
+ggplot() + 
+  geom_sf(data = lambert_aus)</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-6-3.png" width="672" /></p>
+<p><strong>Comment:</strong> I chose to utilize the Lambert azimuthal equal-area projection, which maps the globe to a disk. These should, in theory, accurately represent area, while not accurately representing angles. In the R projeciton however, we do see some exaggeration of area on the edges of the disk. I chose to center my maps on Portland, OR and Sydney, AUS.</p>
+</div>
+<div id="challenge-4" class="section level1">
+<h1>Challenge 4</h1>
+<p>Plot both grocery stores and farmers markets!</p>
+<pre class="r"><code>fmarket &lt;- st_read(here::here(&quot;data&quot;, &quot;Farmers_Markets-shp&quot;))</code></pre>
+<pre><code>## Reading layer `Farmers_Markets&#39; from data source 
+##   `/Users/samcallis/Documents/OHSU/R/Spring22/project/data/Farmers_Markets-shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 20 features and 11 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -13665000 ymin: 5696460 xmax: -13644270 ymax: 5714893
+## Projected CRS: WGS 84 / Pseudo-Mercator</code></pre>
+<pre class="r"><code>grocery &lt;- st_read(here::here(&quot;data&quot;, &quot;Grocery_Stores-shp&quot;))</code></pre>
+<pre><code>## Reading layer `Grocery_Stores&#39; from data source 
+##   `/Users/samcallis/Documents/OHSU/R/Spring22/project/data/Grocery_Stores-shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 123 features and 9 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -13665520 ymin: 5686206 xmax: -13634020 ymax: 5718088
+## Projected CRS: WGS 84 / Pseudo-Mercator</code></pre>
+<pre class="r"><code>pdx %&gt;% 
+  ggplot() + 
+  geom_sf(fill = &quot;mistyrose2&quot;, alpha = 0.3) + 
+  geom_sf(data=rivers,  fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.7) +
+  geom_sf(data=fmarket, colour = &quot;darkgreen&quot;, alpha = 0.7, shape = 17, size = 2) +
+  geom_sf(data = grocery, color = &quot;orchid4&quot;, alpha = 0.7, shape = 18, size = 2) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre class="r"><code>?geom_sf</code></pre>
+<pre><code>## Help on topic &#39;geom_sf&#39; was found in the following packages:
+## 
+##   Package               Library
+##   ggplot2               /Library/Frameworks/R.framework/Versions/4.1/Resources/library
+##   ggspatial             /Library/Frameworks/R.framework/Versions/4.1/Resources/library
+## 
+## 
+## Using the first match ...</code></pre>
+<p><strong>Comment:</strong> Here, grocery stores are mapped as purple diamonds, and farmers markets are mapped as green triangles. We can see some grocery stores in our dataset fall outside the Portland city Limits.</p>
+</div>
+<div id="challenge-5" class="section level1">
+<h1>Challenge 5</h1>
+<p>Plot your neighborhood’s park</p>
+<pre class="r"><code># We will map laurelhurst park
+pdx %&gt;% ggplot() + 
+  geom_sf(fill = &quot;snow&quot;, alpha = 0.3) + 
+  geom_sf(data=trees) + 
+  coord_sf(
+    xlim=c(-13651300,-13650000), 
+    ylim=c(5703577, 5704200)) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code># crop out trees
+trees_laurelhurst &lt;- st_crop(trees, xmin=-13651300, ymin=5703577, xmax=-13650000, ymax=5704200)</code></pre>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries</code></pre>
+<pre class="r"><code># plot trees
+pdx %&gt;% ggplot() + 
+  geom_sf(fill = &quot;snow&quot;, alpha = 0.3) + 
+  geom_sf(data=trees_laurelhurst, mapping=aes(color=Native, alpha = 0.9)) + 
+  coord_sf(
+    xlim=c(-13651190,-13650300), 
+    ylim=c(5703577, 5704200)) +
+  scale_color_brewer(palette = &quot;Dark2&quot;) +
+  scale_alpha_continuous(guide = &quot;none&quot;) +
+  theme_bw() +
+  ggtitle(&quot;Map of Trees in Laurelhurst Park, Portland&quot;)</code></pre>
+<pre><code>## Warning: Removed 11 rows containing missing values (geom_sf).</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p><strong>Comment:</strong> Here we can see the outline of Laurelhurst Park, the best park in Portland if you ask me. Trees are colored by native status.</p>
+</div>
+<div id="challenge-6" class="section level1">
+<h1>Challenge 6</h1>
+<p>Use OpenStreetMap tiles
+# <code>{r} # laurelhurst_map &lt;- get_stamenmap( #   c(left=-122.632, bottom=45.519, right=-122.622, top=45.523), #   zoom=16, #   maptype="terrain") #  # trees_laurelhurst_projected &lt;- st_transform(trees_laurelhurst, sf::st_crs(4326)) #  # ggmap(laurelhurst_map) + #   geom_sf(data=trees_laurelhurst_projected, #           inherit.aes = FALSE, #           mapping = aes(color=Native, alpha = 0.95, shape = Native), #           size = 2) + #   scale_color_brewer(palette = "Dark2", direction = -1) + #   labs(alpha = "", #        x = "Longitude", #        y = "Latititude", #        title = "Trees in Laurelhurst Park", #        subtitle = "Grouped by Native and Non-native") + #   scale_alpha_continuous(guide = "none") + #   theme_minimal() #</code></p>
+<p><strong>Comment:</strong> Here we can see a little more helpful map of Laurelhurst park, with trees plotted similarly as above, with different colors and shapes indicating which tree species are native to the area. We can see that in some areas there is some intentional planting patterns within the non-native trees. Most of the native trees appear to be more randomly dispersed throughout the park.</p>
+</div>
+<div id="challenge-7" class="section level1">
+<h1>Challenge 7</h1>
+<p>A map using a different census column (or multiple columns!)</p>
+<pre class="r"><code># pull data out of the Excel file, by cell range
+pdx_households &lt;- read_excel(here::here(&quot;data&quot;,&quot;Census_2010_Data_Cleanedup.xlsx&quot;),
+                             sheet=&quot;Census_2010_Neighborhoods&quot;, 
+                             range=&quot;A6:CJ101&quot;) %&gt;%
+  dplyr::select(&quot;NEIGHBORHOOD ASSOCIATION&quot;, &quot;P0200002&quot;,&quot;H0010001&quot;) %&gt;%
+  rename(&quot;neighborhood&quot; = &quot;NEIGHBORHOOD ASSOCIATION&quot;,
+         &quot;household_18_under&quot; = &quot;P0200002&quot;,
+         &quot;tot_household&quot; = &quot;H0010001&quot;) %&gt;%
+  mutate(quotient = round(household_18_under/tot_household*100,1))
+
+# I created a variable which tells us the percentage of households with residents under 18 years of age
+summary(pdx_households$quotient)</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    0.00   19.25   24.50   23.44   28.45   44.60</code></pre>
+<pre class="r"><code>#using steven&#39;s code
+pdx_households &lt;- pdx_households %&gt;% 
+  mutate(neighborhood=recode(neighborhood,
+  &quot;ARGAY&quot; = &quot;ARGAY TERRACE&quot;,
+  &quot;BROOKLYN&quot; = &quot;BROOKLYN ACTION CORPS&quot;,
+  &quot;BUCKMAN&quot; = &quot;BUCKMAN COMMUNITY ASSOCIATION&quot;,
+  &quot;CENTENNIAL&quot; = &quot;CENTENNIAL COMMUNITY ASSOCIATION&quot;,
+  &quot;CULLY&quot; = &quot;CULLY ASSOCIATION OF NEIGHBORS&quot;,
+  &quot;CENTENNIAL&quot; = &quot;CENTENNIAL COMMUNITY ASSOCIATION&quot;,
+  &quot;DOWNTOWN&quot; = &quot;PORTLAND DOWNTOWN&quot;,
+  &quot;GOOSE HOLLOW&quot; = &quot;GOOSE HOLLOW FOOTHILLS LEAGUE&quot;,
+  &quot;HAYDEN ISLAND&quot; = &quot;HAYDEN ISLAND NEIGHBORHOOD NETWORK&quot;,
+  &quot;HOSFORD-ABERNETHY&quot; = &quot;HOSFORD-ABERNETHY NEIGHBORHOOD DISTRICT ASSN.&quot;,
+  &quot;IRVINGTON&quot; = &quot;IRVINGTON COMMUNITY ASSOCIATION&quot;,
+  &quot;LLOYD DISTRICT&quot; = &quot;LLOYD DISTRICT COMMUNITY ASSOCIATION&quot;,
+  &quot;NORTHWEST DISTRICT&quot; = &quot;NORTHWEST DISTRICT ASSOCIATION&quot;,
+  &quot;OLD TOWN-CHINATOWN&quot; = &quot;OLD TOWN COMMUNITY ASSOCIATION&quot;,
+  &quot;PARKROSE HEIGHTS&quot; = &quot;PARKROSE HEIGHTS ASSOCIATION OF NEIGHBORS&quot;,
+  &quot;PEARL&quot; = &quot;PEARL DISTRICT&quot;,
+  &quot;SABIN&quot; = &quot;SABIN COMMUNITY ASSOCIATION&quot;,
+  &quot;SELLWOOD-MORELAND&quot; = &quot;SELLWOOD-MORELAND IMPROVEMENT LEAGUE&quot;,
+  &quot;SOUTHWEST HILLS&quot; = &quot;SOUTHWEST HILLS RESIDENTIAL LEAGUE&quot;,
+  &quot;SUMNER&quot; = &quot;SUMNER ASSOCIATION OF NEIGHBORS&quot;,
+  &quot;SUNDERLAND&quot; = &quot;SUNDERLAND ASSOCIATION OF NEIGHBORS&quot;,
+  &quot;WILKES&quot; = &quot;WILKES COMMUNITY GROUP&quot;
+))
+
+pdx_with_hh &lt;- left_join(pdx, pdx_households, by=c(&quot;NAME&quot;=&quot;neighborhood&quot;))
+pdx_with_hh %&gt;% glimpse()</code></pre>
+<pre><code>## Rows: 98
+## Columns: 14
+## $ OBJECTID           &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, …
+## $ NAME               &lt;chr&gt; &quot;CATHEDRAL PARK&quot;, &quot;UNIVERSITY PARK&quot;, &quot;PIEDMONT&quot;, &quot;W…
+## $ COMMPLAN           &lt;chr&gt; NA, NA, &quot;ALBINA&quot;, &quot;ALBINA&quot;, NA, &quot;ALBINA&quot;, &quot;ALBINA&quot;,…
+## $ SHARED             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ COALIT             &lt;chr&gt; &quot;NPNS&quot;, &quot;NPNS&quot;, &quot;NPNS&quot;, &quot;NECN&quot;, &quot;CNN&quot;, &quot;NPNS&quot;, &quot;NPN…
+## $ HORZ_VERT          &lt;chr&gt; &quot;HORZ&quot;, &quot;HORZ&quot;, &quot;VERT&quot;, &quot;HORZ&quot;, &quot;HORZ&quot;, &quot;HORZ&quot;, &quot;HO…
+## $ MAPLABEL           &lt;chr&gt; &quot;Cathedral Park&quot;, &quot;University Park&quot;, &quot;Piedmont&quot;, &quot;W…
+## $ ID                 &lt;int&gt; 31, 88, 70, 93, 23, 2, 66, 19, 67, 84, 44, 48, 89, …
+## $ Shape_Leng         &lt;dbl&gt; 11434.255, 11950.860, 10849.327, 8078.361, 18179.39…
+## $ Shape_Area         &lt;dbl&gt; 5424297.8, 6981456.8, 6079530.0, 3870553.6, 1658062…
+## $ household_18_under &lt;dbl&gt; 320, 386, 765, 548, 1593, 632, 596, 961, 684, 225, …
+## $ tot_household      &lt;dbl&gt; 1703, 1834, 2983, 2084, 5230, 2774, 2756, 4001, 231…
+## $ quotient           &lt;dbl&gt; 18.8, 21.0, 25.6, 26.3, 30.5, 22.8, 21.6, 24.0, 29.…
+## $ geometry           &lt;MULTIPOLYGON [m]&gt; MULTIPOLYGON (((-13664216 5..., MULTIP…</code></pre>
+<pre class="r"><code>library(&quot;viridis&quot;)</code></pre>
+<pre><code>## Loading required package: viridisLite</code></pre>
+<pre><code>## 
+## Attaching package: &#39;viridis&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:maps&#39;:
+## 
+##     unemp</code></pre>
+<pre class="r"><code># make a plot
+pdx_with_hh %&gt;% ggplot() + 
+  geom_sf(aes(fill=quotient)) + 
+  scale_fill_viridis(alpha =0.9, direction = -1, option = &quot;plasma&quot;) +
+  #scale_fill_gradient(low = &quot;lightgoldenrod1&quot;,
+  #                    high = &quot;orangered3&quot;) +
+  geom_sf(data=rivers, fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.7) +
+  labs(fill = &quot; %&quot;, title = &quot;Density of Households with Kids (under 18)&quot;,
+       subtitle = &quot;By Neighborhood in Portland, OR&quot;)+
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><strong>Comment:</strong> Here we can see that the density of households with children is generally lower closer to the city center, and increases with distance from the city center. Outer Southeast Portland appears to have the largest concentration of households with kids.</p>
+</div>
+<div id="challenge-8" class="section level1">
+<h1>Challenge 8</h1>
+<p>Exploring color scales</p>
+<pre class="r"><code>pdx_with_hh %&gt;%
+  ggplot() +
+  aes(x = quotient) +
+  geom_histogram(bins = 50) +
+  theme_minimal() +
+  labs(x = &quot;Households with Kids 18/under (%)&quot;) +
+  ylim(c(0,8))</code></pre>
+<pre><code>## Warning: Removed 4 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>min_q &lt;- min(pdx_with_hh$quotient, na.rm=TRUE)
+max_q &lt;- max(pdx_with_hh$quotient, na.rm=TRUE)
+diff_q &lt;- max_q - min_q
+sd_q &lt;- sd(pdx_with_hh$quotient, na.rm = TRUE)
+?classIntervals
+
+# some possible color break points
+equal_interval &lt;- seq(min_q, max_q, by= diff_q / 5) 
+quantile_interval &lt;- quantile(pdx_with_hh$quotient, probs=seq(0, 1, by = 1/5), na.rm = TRUE)
+sd_interval &lt;- c(seq(min_q, max_q, by=sd_q), max_q)
+jenks_interval &lt;- classIntervals(pdx_with_hh$quotient, n=5, style=&#39;jenks&#39;)$brks</code></pre>
+<pre><code>## Warning in classIntervals(pdx_with_hh$quotient, n = 5, style = &quot;jenks&quot;): var has
+## missing values, omitted in finding classes</code></pre>
+<pre class="r"><code># now let&#39;s store the relevant break point in a variable:
+pdx_with_hh$q_equal = cut(pdx_with_hh$quotient, breaks=equal_interval, include.lowest = TRUE)
+pdx_with_hh$q_quantile = cut(pdx_with_hh$quotient, breaks=quantile_interval, include.lowest = TRUE)
+pdx_with_hh$q_sd = cut(pdx_with_hh$quotient, breaks=sd_interval, include.lowest = TRUE)
+pdx_with_hh$q_jenks = cut(pdx_with_hh$quotient, breaks=jenks_interval, include.lowest = TRUE)
+
+popDensBarChart &lt;- function(break_col) {
+  pdx_with_hh %&gt;% 
+  filter(!is.na(quotient)) %&gt;% 
+  ggplot(mapping = aes(x=fct_reorder(MAPLABEL, -quotient), y=quotient)) +
+    geom_col(aes(fill=.data[[break_col]])) +
+    # theme(axis.text.x=element_text(angle=270, hjust=0, size=6, vjust=0.5)) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+    scale_y_continuous(name=&quot;Households w/ kids (%)&quot;) +
+  scale_x_discrete(name=NULL) +
+    scale_fill_discrete(guide=FALSE) +
+  ggtitle(break_col)
+}
+
+plot_grid(
+  popDensBarChart(&quot;q_equal&quot;),
+  popDensBarChart(&quot;q_quantile&quot;),
+  popDensBarChart(&quot;q_sd&quot;),
+  popDensBarChart(&quot;q_jenks&quot;),
+  nrow=2, ncol=2
+)</code></pre>
+<pre><code>## Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please
+## use `guide = &quot;none&quot;` instead.</code></pre>
+<pre><code>## Warning: It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = &quot;none&quot;` instead.
+## It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = &quot;none&quot;` instead.
+## It is deprecated to specify `guide = FALSE` to remove a guide. Please use `guide = &quot;none&quot;` instead.</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<pre class="r"><code>?plot_grid
+# make plots!
+pdx_with_hh %&gt;% ggplot() + 
+  geom_sf(aes(fill=q_equal)) + 
+  geom_sf(data=rivers, fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.7) +
+  labs(fill = &quot; %&quot;, title = &quot;Density of Households with Kids (under 18)&quot;,
+       subtitle = &quot;Five equal cuts&quot;)+
+  scale_fill_brewer(palette = &quot;YlGnBu&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
+<pre class="r"><code>pdx_with_hh %&gt;% ggplot() + 
+  geom_sf(aes(fill=q_quantile)) + 
+  geom_sf(data=rivers, fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.7) +
+  labs(fill = &quot; %&quot;, title = &quot;Density of Households with Kids (under 18)&quot;,
+       subtitle = &quot;Cut into 5 quantiles&quot;)+
+  scale_fill_brewer(palette = &quot;YlGnBu&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-12-4.png" width="672" /></p>
+<pre class="r"><code>pdx_with_hh %&gt;% ggplot() + 
+  geom_sf(aes(fill=q_sd)) + 
+  geom_sf(data=rivers, fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.7) +
+  labs(fill = &quot; %&quot;, title = &quot;Density of Households with Kids (under 18)&quot;,
+       subtitle = &quot;Cut by standard deviations&quot;)+
+  scale_fill_brewer(palette = &quot;YlGnBu&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-12-5.png" width="672" /></p>
+<pre class="r"><code>pdx_with_hh %&gt;% ggplot() + 
+  geom_sf(aes(fill=q_jenks)) + 
+  geom_sf(data=rivers, fill=&quot;steelblue4&quot;, size=0.0, alpha = 0.7) +
+  labs(fill = &quot; %&quot;, title = &quot;Density of Households with Kids (under 18)&quot;,
+       subtitle = &quot;Cut using Jenk&#39;s algorithm&quot;)+
+  scale_fill_brewer(palette = &quot;YlGnBu&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/projects/maps_files/figure-html/unnamed-chunk-12-6.png" width="672" /></p>
+<p><strong>Comment:</strong> In this case, I decided to use five bins to visualize the change density of households with children. I think Jenk’s algorithm provides the best breaks in this case, as it appears to do a good job at cutting out noticeable subgroups in the data, especially at the low end. There is a large, steadily increasing section in the middle, and I similarly think Jenk’s algorithm splits it out the best. I think a continuous density map (as in challenge 7) is perfectly fine for this dataset, but I think similar conclusions are drawn with the categorized maps. There is an obvious positive trend with increasing households with kids with distance from downtown Portland, as we would expect.</p>
+</div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="footer column">
+    <div class="container">
+
+        
+
+        
+
+        <div class="copyright">
+
+        
+
+        </div>
+        <div class="icons">
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+            <a href="https://github.com/samcallis" rel=me target="_blank">
+                <img class="icon" src="/img/github.svg" alt="github" />
+            </a>
+        
+
+        
+
+        
+            <a href="https://www.linkedin.com/in/sam-callis-b88538158/" rel=me target="_blank">
+                <img class="icon" src="/img/linkedin.svg" alt="linkedin" />
+            </a>
+        
+
+        
+
+        
+
+        
+            <a href="mailto:samueljcallis@gmail.com">
+                <img class="icon" src="/img/email.svg" alt="email" />
+            </a>
+        
+
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+<script>
+  WebFont.load({
+    google: {
+      families: ['Raleway:400,600,700', 'Merriweather:300,300i,700,700i', 'Ubuntu+Mono:400,700']
+    }
+  });
+</script>
+
+
+
+  <script src="/js/highlight.min.js" defer></script>
+  
+
+
+
+  <script src="/js/progressively.min.js" defer></script>
+
+
+
+  <script src="/js/social-share-kit.min.js" defer></script>
+
+
+
+
+
+
+<script>
+  window.onload = function() {
+    
+      hljs.initHighlighting();
+    
+    
+      progressively.init({delay: 30, throttle: 50});
+    
+    
+      SocialShareKit.init({
+        twitter: {
+            text: '',
+            
+        }
+      });
+    
+  };
+</script>
+
+
+
+
+</body>
+</html>
+

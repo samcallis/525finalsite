@@ -1,0 +1,243 @@
+---
+title: "Tables and Fonts"
+author: Sam Callis
+date: "2022-05-15"
+output:
+    html_document:
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    code_folding: hide
+---
+
+```{r setup, echo=FALSE, message=FALSE}
+library(tidyverse)
+library(devtools)
+#install_github("ismayc/pnwflights14")
+library(pnwflights14)
+library(gt)
+data("flights", package = "pnwflights14")
+```
+
+# Lab 5 - Tables & Fonts
+
+## Tables
+
+Note that the [pnwflights14 package](https://github.com/ismayc/pnwflights14) includes several other data sets that may be of use and/or interest: mappings from two-letter airline codes to airline names, weather conditions, etc.
+
+```{r eval=FALSE}
+data("flights", package = "pnwflights14")
+data("weather", package = "pnwflights14")
+data("airports", package = "pnwflights14")
+data("airlines", package = "pnwflights14")
+```
+
+### Question 1
+Which airlines had the best and worst track records of on-time departures in each month? Is it different between PDX and SEA?
+
+```{r}
+#look at dataset
+glimpse(flights)
+skimr::skim(flights)
+
+### Make the table
+flights <- flights %>%
+  mutate(on_time = case_when(dep_delay <= 0 ~ "On Time",
+                             TRUE ~ "Late"),
+         on_time = as_factor(on_time))
+
+time_table <- flights %>%
+  group_by(month, origin) %>%
+  count(on_time) %>%
+  pivot_wider(names_from = on_time, values_from = n)
+
+time_table <- time_table %>%
+  janitor::clean_names() %>%
+  mutate(month = as_factor(month),
+         on_time_pct = round(on_time/(on_time+late)*100,1)) %>%
+  dplyr::select(month, origin, on_time_pct) %>%
+  pivot_wider(names_from = origin, values_from = on_time_pct) %>%
+  mutate(better_airport = case_when(PDX > SEA ~ "PDX",
+                                    SEA > PDX ~ "SEA")) %>%
+  as_tibble()
+
+time_table$month <- fct_recode(time_table$month, 
+                               January = "1",
+                               February = "2",
+                               March = "3",
+                               April = "4",
+                               May = "5",
+                               June = "6",
+                               July = "7",
+                               August = "8",
+                               September = "9",
+                               October = "10",
+                               November = "11",
+                               December = "12")
+```
+
+```{r}
+### Format the table
+time_table_fmt <- time_table %>% gt() %>%
+  tab_header(title = "On Time Departure Percentages",
+             subtitle = "PDX & SEA, by Month in 2014") %>%
+  fmt_number(columns = c(PDX, SEA), decimals = 1) %>%
+  cols_label(month = "Month", PDX = "PDX (%)", SEA = "SEA (%)", 
+             better_airport = "Who's Better?") %>% 
+  cols_align(align="center", columns=c(PDX, SEA)) %>%
+  cols_align(align = "left", columns = month)%>% 
+  cols_align(align = "center", columns = better_airport)%>% 
+  tab_spanner(
+    label = "Airport",
+    columns = c(PDX, SEA))%>% 
+  tab_style(
+    cell_text(style = "italic"),
+    locations = cells_title(groups=c("title", "subtitle"))
+  )
+
+time_table_fmt
+
+```
+  
+  
+  
+**Comment::** Here we can see that by and large, PDX has a much better record of on time departures in 2014 compared to SEA. SEA overtakes PDX in February, but by the slim margin of 0.4%.
+
+### Question 2
+What cities have the most service from Portland (defined however you like, but do make sure to define it clearly!), and which have the worst?
+```{r}
+### We will find the top five cities by number of flights per month from portland
+dest_table <- flights %>%
+  filter(origin == "PDX") %>%
+  group_by(month) %>%
+  count(dest) %>%
+  top_n(4, n) %>%
+  arrange(desc(n), .by_group = TRUE) %>%
+  mutate(month = as_factor(month),
+         top_dest = glue::glue('{dest} ({n})')) %>%
+  select(-dest, -n) %>%
+  as_tibble() 
+
+position <- rep(1:4, 12)
+
+dest_table <- cbind(position, dest_table)
+
+dest_table$month <- fct_recode(dest_table$month, 
+                               Jan = "1",
+                               Feb = "2",
+                               Mar = "3",
+                               Apr = "4",
+                               May = "5",
+                               June = "6",
+                               July = "7",
+                               Aug = "8",
+                               Sept = "9",
+                               Oct = "10",
+                               Nov = "11",
+                               Dec = "12")
+
+dest_table %>%
+  pivot_wider(id_cols = position, names_from = month, values_from = top_dest) %>%
+  select(-position) %>%
+  gt() %>%
+  tab_header(title = "Top Destinations from PDX by Month in 2014") %>%
+  tab_spanner(
+    label = "Airport Code (# Flights)",
+    columns = c(Feb:Nov)) %>%
+  tab_style(
+    cell_text(style = "italic"),
+    locations = cells_title(groups=c("title"))
+  )
+
+```
+
+  
+   
+   
+**Comment:** SFO is the unanimous most frequent destination out of PDX, which makes sense as there are probably a lot of connecting flights out of there. This is likely similar for DEN, LAX in second place, with the exception of PHX in December, likely a warm weather retreat. 
+
+### Question 3
+Descriptive statistics comparing several characteristics of long-haul vs. short-haul routes (defined however you like, but you must be clear about your definition)
+```{r}
+library(hms)
+summary(flights$air_time)
+
+## We will use 3 hours (180 mins) as the cutoff between long and short haul flights
+flights <- flights %>%
+  mutate(haul = case_when(air_time <= 180 ~ "Short (<3 hrs)",
+                          air_time > 180 ~ "Long (>3 hrs)"),
+         haul = factor(haul, levels = c("Short (<3 hrs)", "Long (>3 hrs)"))) %>%
+  drop_na(haul)
+
+
+# create date-time variables
+flights <- flights %>%
+  mutate(dep_time = str_pad(dep_time, 4, pad = "0"),
+         month = str_pad(month, 2, pad = "0"),
+         day = str_pad(day, 2, pad = "0"),
+         dep_time = gsub("(\\d{2})(\\d{2})", "\\1:\\2", sprintf("%04d", flights$dep_time)),
+         date_time = glue::glue('{year}-{month}-{day} {dep_time}'),
+         date_time = as.character(date_time),
+         date_time = lubridate::ymd_hm(date_time),
+         dep_time = strptime(dep_time, format = "%H:%M"),
+         arr_time = gsub("(\\d{2})(\\d{2})", "\\1:\\2", sprintf("%04d", flights$arr_time)),
+         arr_time = strptime(arr_time, format = "%H:%M"),
+         air_time_min = lubridate::dminutes(air_time))
+
+# write fuctions to give us values we want
+Mode <- function(x) {
+ ux <- unique(x)
+ ux[which.max(tabulate(match(x, ux)))]
+}
+
+Prop <- function(x) {
+  tab <- janitor::tabyl(x)
+  round(tab$percent[2]*100,1)
+}
+```
+
+```{r}
+# build our table!
+flights %>%
+  filter(origin == "PDX") %>%
+  group_by(haul) %>%
+  summarise("Avg. Dep. Time" = round(mean(dep_time, na.rm = TRUE),0),
+            "Avg. Arr. Time" = round(mean(arr_time, na.rm = TRUE),0),
+            "Avg. Flight Time" = mean(air_time, na.rm = TRUE),
+            sd_fli = round(sd(air_time/60),2),
+            "Avg. Distance" = round(mean(distance, na.rm = TRUE),0),
+            sd_dis = round(sd(distance),1),
+            carrier = Mode(carrier),
+            destination = Mode(dest),
+            pct_time = Prop(on_time)) %>%
+  janitor::clean_names() %>%
+  mutate(avg_dep_time = hms::as_hms(avg_dep_time),
+         avg_arr_time = hms::as_hms(avg_arr_time),
+         avg_flight_time = round(avg_flight_time/60,2),
+         avg_flight_time = glue::glue("{avg_flight_time} ({sd_fli})"),
+         avg_distance = glue::glue("{avg_distance} ({sd_dis})")) %>%
+  select(-sd_fli, -sd_dis) %>%
+  gt() %>%
+  tab_header(title = "Comparing Long Haul and Short Haul Flights",
+             subtitle = "From PDX in 2014") %>%
+  tab_style(
+    cell_text(style = "italic"),
+    locations = cells_title(groups=c("title", "subtitle"))
+  )  %>%
+  cols_label(haul = "Haul", avg_dep_time = "Avg. Dep. Time", avg_arr_time = "Avg. Arr. Time",
+             avg_flight_time = "Avg. Duration in hrs. (SD)", avg_distance = "Avg. Dist. in mi. (SD)",
+             carrier = "Top Carrier", destination = "Top Dest.", pct_time = "% On Time") %>% 
+  cols_align(align="center", columns=c(avg_dep_time:pct_time)) %>%
+  cols_align(align = "left", columns = haul) 
+
+
+```
+  
+  
+**Comment:** Presented here are some summary statistics of short and long haul flights from PDX in 2014. We can see that short haul flights leave slightly later on average, obivously have shorter average flight times & distance and most commonly go to SFO. Long haul flights most commonly go to ORD. In 2014, long haul flights were on time more often than short haul flights. WN was the top short haul carrier and AS was the top long haul carrier. 
+
+> The font exploration portion of this lab is omitted, as the extrafont package is not working
+
+

@@ -1,0 +1,339 @@
+---
+author: Sam Callis
+date: "2022-06-01"
+title: "Maps"
+output: 
+  html_document:
+    theme: flatly
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: TRUE
+    code_folding: hide
+---
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)
+library(sf)
+library(sp)
+#library(tmap)
+library(osmdata)
+library(ggmap)
+library(readxl)
+library(classInt)
+library(cowplot)
+library(maps)
+library(ggspatial)
+```
+
+
+Here we will take a look at our data:
+```{r}
+trees_raw <- read.csv(here::here("data", "Parks_Tree_Inventory.csv"))
+glimpse(trees_raw)
+
+# shape file
+trees <- st_read(here::here("data", "Parks_Tree_Inventory-shp"))
+```
+
+```{r}
+# load in city files
+pdx <- st_read(here::here("data", "Neighborhoods__Regions_-shp"))
+rivers <- st_read(here::here("data", "Willamette_Columbia_River_Ordinary_High_Water-shp"))
+
+pdx %>%
+  ggplot() +
+  geom_sf()
+```
+
+# Challenge 1
+
+Map centered on your neighborhood!
+```{r}
+pdx %>% ggplot() + 
+  geom_sf() + 
+  coord_sf(
+    xlim=c(-13656000,-13650800), 
+    ylim=c(5703577, 5706277)) +
+    geom_sf_label(aes(label=MAPLABEL)) +
+  theme_minimal()
+```
+
+**Comment:** This map is centered on Kerns! The best neighborhood in Portland if you ask me.
+
+# Challenge 2
+
+Changing river and neighborhood color!
+```{r}
+pdx %>% 
+  ggplot() + 
+  geom_sf(fill = "mistyrose2", alpha = 0.6) + 
+  geom_sf(data=rivers, fill="steelblue4", size=0.0, alpha = 0.8) +
+  theme_minimal()
+
+```
+
+**Comment:** By changing the transparency of the neighborhood boundary fill, we can see that there is some overlap in the GIS shape files, so some of our area belongs to two neighborhoods.
+
+# Challenge 3
+
+Experiment with projections!
+```{r}
+world1 <- sf::st_as_sf(map('world', plot = FALSE, fill = TRUE))
+ggplot() + 
+  geom_sf(data = world1)
+
+## lambert azimuthal equal area projection - centered on portland
+lambert_pdx <- sf::st_transform(
+  world1,
+  "+proj=laea +lat_0=45.5 +lon_0=-122.65 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs "
+)
+ggplot() + 
+  geom_sf(data = lambert_pdx)
+
+## lambert azimuthal equal area projection - centered on Sydney, Australia
+lambert_aus <- sf::st_transform(
+  world1,
+  "+proj=laea +lat_0=-33.8688 +lon_0=151.2093 +x_0=0 +y_0=0 +a=6371007.181 +b=6371007.181 +units=m +no_defs "
+)
+ggplot() + 
+  geom_sf(data = lambert_aus)
+```
+
+**Comment:** I chose to utilize the Lambert azimuthal equal-area projection, which maps the globe to a disk. These should, in theory, accurately represent area, while not accurately representing angles. In the R projeciton however, we do see some exaggeration of area on the edges of the disk. I chose to center my maps on Portland, OR and Sydney, AUS.
+
+# Challenge 4
+
+Plot both grocery stores and farmers markets!
+
+```{r}
+fmarket <- st_read(here::here("data", "Farmers_Markets-shp"))
+grocery <- st_read(here::here("data", "Grocery_Stores-shp"))
+```
+```{r}
+pdx %>% 
+  ggplot() + 
+  geom_sf(fill = "mistyrose2", alpha = 0.3) + 
+  geom_sf(data=rivers,  fill="steelblue4", size=0.0, alpha = 0.7) +
+  geom_sf(data=fmarket, colour = "darkgreen", alpha = 0.7, shape = 17, size = 2) +
+  geom_sf(data = grocery, color = "orchid4", alpha = 0.7, shape = 18, size = 2) +
+  theme_minimal()
+
+?geom_sf
+```
+
+**Comment:** Here, grocery stores are mapped as purple diamonds, and farmers markets are mapped as green triangles. We can see some grocery stores in our dataset fall outside the Portland city Limits.
+
+# Challenge 5
+
+Plot your neighborhood's park
+```{r}
+# We will map laurelhurst park
+pdx %>% ggplot() + 
+  geom_sf(fill = "snow", alpha = 0.3) + 
+  geom_sf(data=trees) + 
+  coord_sf(
+    xlim=c(-13651300,-13650000), 
+    ylim=c(5703577, 5704200)) +
+  theme_minimal()
+
+# crop out trees
+trees_laurelhurst <- st_crop(trees, xmin=-13651300, ymin=5703577, xmax=-13650000, ymax=5704200)
+
+# plot trees
+pdx %>% ggplot() + 
+  geom_sf(fill = "snow", alpha = 0.3) + 
+  geom_sf(data=trees_laurelhurst, mapping=aes(color=Native, alpha = 0.9)) + 
+  coord_sf(
+    xlim=c(-13651190,-13650300), 
+    ylim=c(5703577, 5704200)) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_alpha_continuous(guide = "none") +
+  theme_bw() +
+  ggtitle("Map of Trees in Laurelhurst Park, Portland")
+```
+
+**Comment:** Here we can see the outline of Laurelhurst Park, the best park in Portland if you ask me. Trees are colored by native status.
+
+# Challenge 6
+
+Use OpenStreetMap tiles
+# ```{r}
+# laurelhurst_map <- get_stamenmap(
+#   c(left=-122.632, bottom=45.519, right=-122.622, top=45.523),
+#   zoom=16,
+#   maptype="terrain")
+# 
+# trees_laurelhurst_projected <- st_transform(trees_laurelhurst, sf::st_crs(4326))
+# 
+# ggmap(laurelhurst_map) +
+#   geom_sf(data=trees_laurelhurst_projected,
+#           inherit.aes = FALSE,
+#           mapping = aes(color=Native, alpha = 0.95, shape = Native),
+#           size = 2) +
+#   scale_color_brewer(palette = "Dark2", direction = -1) +
+#   labs(alpha = "",
+#        x = "Longitude",
+#        y = "Latititude",
+#        title = "Trees in Laurelhurst Park",
+#        subtitle = "Grouped by Native and Non-native") +
+#   scale_alpha_continuous(guide = "none") +
+#   theme_minimal()
+# ```
+
+**Comment:** Here we can see a little more helpful map of Laurelhurst park, with trees plotted similarly as above, with different colors and shapes indicating which tree species are native to the area. We can see that in some areas there is some intentional planting patterns within the non-native trees. Most of the native trees appear to be more randomly dispersed throughout the park.
+
+# Challenge 7
+
+A map using a different census column (or multiple columns!)
+```{r}
+# pull data out of the Excel file, by cell range
+pdx_households <- read_excel(here::here("data","Census_2010_Data_Cleanedup.xlsx"),
+                             sheet="Census_2010_Neighborhoods", 
+                             range="A6:CJ101") %>%
+  dplyr::select("NEIGHBORHOOD ASSOCIATION", "P0200002","H0010001") %>%
+  rename("neighborhood" = "NEIGHBORHOOD ASSOCIATION",
+         "household_18_under" = "P0200002",
+         "tot_household" = "H0010001") %>%
+  mutate(quotient = round(household_18_under/tot_household*100,1))
+
+# I created a variable which tells us the percentage of households with residents under 18 years of age
+summary(pdx_households$quotient)
+
+#using steven's code
+pdx_households <- pdx_households %>% 
+  mutate(neighborhood=recode(neighborhood,
+  "ARGAY" = "ARGAY TERRACE",
+  "BROOKLYN" = "BROOKLYN ACTION CORPS",
+  "BUCKMAN" = "BUCKMAN COMMUNITY ASSOCIATION",
+  "CENTENNIAL" = "CENTENNIAL COMMUNITY ASSOCIATION",
+  "CULLY" = "CULLY ASSOCIATION OF NEIGHBORS",
+  "CENTENNIAL" = "CENTENNIAL COMMUNITY ASSOCIATION",
+  "DOWNTOWN" = "PORTLAND DOWNTOWN",
+  "GOOSE HOLLOW" = "GOOSE HOLLOW FOOTHILLS LEAGUE",
+  "HAYDEN ISLAND" = "HAYDEN ISLAND NEIGHBORHOOD NETWORK",
+  "HOSFORD-ABERNETHY" = "HOSFORD-ABERNETHY NEIGHBORHOOD DISTRICT ASSN.",
+  "IRVINGTON" = "IRVINGTON COMMUNITY ASSOCIATION",
+  "LLOYD DISTRICT" = "LLOYD DISTRICT COMMUNITY ASSOCIATION",
+  "NORTHWEST DISTRICT" = "NORTHWEST DISTRICT ASSOCIATION",
+  "OLD TOWN-CHINATOWN" = "OLD TOWN COMMUNITY ASSOCIATION",
+  "PARKROSE HEIGHTS" = "PARKROSE HEIGHTS ASSOCIATION OF NEIGHBORS",
+  "PEARL" = "PEARL DISTRICT",
+  "SABIN" = "SABIN COMMUNITY ASSOCIATION",
+  "SELLWOOD-MORELAND" = "SELLWOOD-MORELAND IMPROVEMENT LEAGUE",
+  "SOUTHWEST HILLS" = "SOUTHWEST HILLS RESIDENTIAL LEAGUE",
+  "SUMNER" = "SUMNER ASSOCIATION OF NEIGHBORS",
+  "SUNDERLAND" = "SUNDERLAND ASSOCIATION OF NEIGHBORS",
+  "WILKES" = "WILKES COMMUNITY GROUP"
+))
+
+pdx_with_hh <- left_join(pdx, pdx_households, by=c("NAME"="neighborhood"))
+pdx_with_hh %>% glimpse()
+```
+
+```{r}
+
+library("viridis")
+# make a plot
+pdx_with_hh %>% ggplot() + 
+  geom_sf(aes(fill=quotient)) + 
+  scale_fill_viridis(alpha =0.9, direction = -1, option = "plasma") +
+  #scale_fill_gradient(low = "lightgoldenrod1",
+  #                    high = "orangered3") +
+  geom_sf(data=rivers, fill="steelblue4", size=0.0, alpha = 0.7) +
+  labs(fill = " %", title = "Density of Households with Kids (under 18)",
+       subtitle = "By Neighborhood in Portland, OR")+
+  theme_minimal()
+```
+
+**Comment:** Here we can see that the density of households with children is generally lower closer to the city center, and increases with distance from the city center. Outer Southeast Portland appears to have the largest concentration of households with kids.
+
+# Challenge 8
+
+Exploring color scales
+
+```{r}
+pdx_with_hh %>%
+  ggplot() +
+  aes(x = quotient) +
+  geom_histogram(bins = 50) +
+  theme_minimal() +
+  labs(x = "Households with Kids 18/under (%)") +
+  ylim(c(0,8))
+
+min_q <- min(pdx_with_hh$quotient, na.rm=TRUE)
+max_q <- max(pdx_with_hh$quotient, na.rm=TRUE)
+diff_q <- max_q - min_q
+sd_q <- sd(pdx_with_hh$quotient, na.rm = TRUE)
+?classIntervals
+
+# some possible color break points
+equal_interval <- seq(min_q, max_q, by= diff_q / 5) 
+quantile_interval <- quantile(pdx_with_hh$quotient, probs=seq(0, 1, by = 1/5), na.rm = TRUE)
+sd_interval <- c(seq(min_q, max_q, by=sd_q), max_q)
+jenks_interval <- classIntervals(pdx_with_hh$quotient, n=5, style='jenks')$brks
+
+# now let's store the relevant break point in a variable:
+pdx_with_hh$q_equal = cut(pdx_with_hh$quotient, breaks=equal_interval, include.lowest = TRUE)
+pdx_with_hh$q_quantile = cut(pdx_with_hh$quotient, breaks=quantile_interval, include.lowest = TRUE)
+pdx_with_hh$q_sd = cut(pdx_with_hh$quotient, breaks=sd_interval, include.lowest = TRUE)
+pdx_with_hh$q_jenks = cut(pdx_with_hh$quotient, breaks=jenks_interval, include.lowest = TRUE)
+
+popDensBarChart <- function(break_col) {
+  pdx_with_hh %>% 
+  filter(!is.na(quotient)) %>% 
+  ggplot(mapping = aes(x=fct_reorder(MAPLABEL, -quotient), y=quotient)) +
+    geom_col(aes(fill=.data[[break_col]])) +
+    # theme(axis.text.x=element_text(angle=270, hjust=0, size=6, vjust=0.5)) +
+  theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+    scale_y_continuous(name="Households w/ kids (%)") +
+  scale_x_discrete(name=NULL) +
+    scale_fill_discrete(guide=FALSE) +
+  ggtitle(break_col)
+}
+
+plot_grid(
+  popDensBarChart("q_equal"),
+  popDensBarChart("q_quantile"),
+  popDensBarChart("q_sd"),
+  popDensBarChart("q_jenks"),
+  nrow=2, ncol=2
+)
+?plot_grid
+# make plots!
+pdx_with_hh %>% ggplot() + 
+  geom_sf(aes(fill=q_equal)) + 
+  geom_sf(data=rivers, fill="steelblue4", size=0.0, alpha = 0.7) +
+  labs(fill = " %", title = "Density of Households with Kids (under 18)",
+       subtitle = "Five equal cuts")+
+  scale_fill_brewer(palette = "YlGnBu") +
+  theme_minimal()
+
+pdx_with_hh %>% ggplot() + 
+  geom_sf(aes(fill=q_quantile)) + 
+  geom_sf(data=rivers, fill="steelblue4", size=0.0, alpha = 0.7) +
+  labs(fill = " %", title = "Density of Households with Kids (under 18)",
+       subtitle = "Cut into 5 quantiles")+
+  scale_fill_brewer(palette = "YlGnBu") +
+  theme_minimal()
+
+pdx_with_hh %>% ggplot() + 
+  geom_sf(aes(fill=q_sd)) + 
+  geom_sf(data=rivers, fill="steelblue4", size=0.0, alpha = 0.7) +
+  labs(fill = " %", title = "Density of Households with Kids (under 18)",
+       subtitle = "Cut by standard deviations")+
+  scale_fill_brewer(palette = "YlGnBu") +
+  theme_minimal()
+
+pdx_with_hh %>% ggplot() + 
+  geom_sf(aes(fill=q_jenks)) + 
+  geom_sf(data=rivers, fill="steelblue4", size=0.0, alpha = 0.7) +
+  labs(fill = " %", title = "Density of Households with Kids (under 18)",
+       subtitle = "Cut using Jenk's algorithm")+
+  scale_fill_brewer(palette = "YlGnBu") +
+  theme_minimal()
+
+```
+  
+**Comment:** In this case, I decided to use five bins to visualize the change density of households with children. I think Jenk's algorithm provides the best breaks in this case, as it appears to do a good job at cutting out noticeable subgroups in the data, especially at the low end. There is a large, steadily increasing section in the middle, and I similarly think Jenk's algorithm splits it out the best. I think a continuous density map (as in challenge 7) is perfectly fine for this dataset, but I think similar conclusions are drawn with the categorized maps. There is an obvious positive trend with increasing households with kids with distance from downtown Portland, as we would expect.
+
